@@ -51,7 +51,11 @@ class _LoginPageState extends State<LoginPage> {
       final form = formKey.currentState;
 
       if (!(form.validate())) {
-        print("Form is invalid");
+        Flushbar(
+          title: "Failed Login!",
+          message: "Please enter your username and password",
+          duration: Duration(seconds: 3),
+        ).show(context);
         return false;
       }
 
@@ -61,14 +65,13 @@ class _LoginPageState extends State<LoginPage> {
           auth.login(_username, _password);
 
       successfulMessage.then((response) {
-        print(response);
         if (response['status']) {
           User user = response['user'];
           Provider.of<UserProvider>(context, listen: false).setUser(user);
           Navigator.pushReplacementNamed(context, '/deliveries');
         } else {
           Flushbar(
-            title: "Failed Login",
+            title: "Failed Login!",
             message: response['message'].toString(),
             duration: Duration(seconds: 3),
           ).show(context);

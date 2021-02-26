@@ -53,4 +53,10 @@ class AuthProvider with ChangeNotifier {
 
     return result;
   }
+
+  logout() async {
+    _loggedInStatus = Status.LoggedOut;
+    UserPreferences().removeUser();
+    notifyListeners();
+  }
 }

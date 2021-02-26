@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'utilities/colors.dart' show MyColors;
 import 'modules/home/components/app_bar.dart' show AppBarComponent;
 import 'modules/home/components/drawer.dart' show DrawerComponent;
-import 'modules/delivery/pages/delivery.dart' show DeliveryPage;
+import 'modules/deliveries/pages/deliveries_page.dart' show DeliveriesPage;
 import 'modules/location_updater/pages/location_updater.dart'
     show LocationUpdaterPage;
 import 'modules/dashboard/pages/dashboard.dart' show DashboardPage;
-import 'modules/profile/pages/profile.dart' show ProfilePage;
+// import 'modules/profile/pages/profile.dart' show ProfilePage;
 
 class Home extends StatefulWidget {
   @override
@@ -22,15 +22,15 @@ class _HomeState extends State<Home> {
 
   final List<Widget> _pages = [
     DashboardPage(),
-    DeliveryPage(),
+    DeliveriesPage(),
     LocationUpdaterPage(),
-    ProfilePage(),
+    // ProfilePage(),
   ];
 
   @override
   initState() {
     super.initState();
-    _title = 'Home';
+    _title = 'Deliveries';
   }
 
   @override
@@ -62,10 +62,10 @@ class _HomeState extends State<Home> {
             icon: Icon(Icons.edit_location),
             label: 'Location Updater',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.person),
+          //   label: 'Profile',
+          // ),
         ],
       ),
     );
