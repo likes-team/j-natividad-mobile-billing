@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:jnb_mobile/modules/authentication/pages/login.dart';
 import 'package:jnb_mobile/modules/authentication/providers/user.dart';
 import 'package:jnb_mobile/modules/location/models/user_location_model.dart';
@@ -43,6 +44,10 @@ class MyApp extends StatelessWidget {
           '/deliveries': (context) => Home(),
           '/login': (context) => LoginPage()
         },
+        builder: BotToastInit(), //1. call BotToastInit
+        navigatorObservers: [
+          BotToastNavigatorObserver()
+        ], //2. registered route observer
         home: FutureBuilder(
           future: getUserData(),
           builder: (context, snapshot) {

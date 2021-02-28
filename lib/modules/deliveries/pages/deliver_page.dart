@@ -1,11 +1,16 @@
 import 'dart:io';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dio/dio.dart';
+import 'package:jnb_mobile/modules/offline_manager/multipart_extended.dart';
 import 'package:jnb_mobile/utilities/urls.dart';
 import 'package:provider/provider.dart';
 import 'package:flushbar/flushbar.dart';
+import 'package:flushbar/flushbar_route.dart' as route;
 import 'package:intl/intl.dart';
+import 'package:jnb_mobile/modules/offline_manager/interceptors/dio_connectivity_request_retrier.dart';
+import 'package:jnb_mobile/modules/offline_manager/interceptors/retry_interceptor.dart';
 import 'package:jnb_mobile/utilities/shared_preference.dart';
 import 'package:jnb_mobile/modules/deliveries/components/myLocationDetailComponent.dart';
 import 'package:jnb_mobile/modules/deliveries/components/subscriber_detail_component.dart';
@@ -23,19 +28,17 @@ class DeliverPage extends StatefulWidget {
 }
 
 class _DeliverPageState extends State<DeliverPage> {
-  bool isCameraReady = false;
-
-  bool showCapturedPhoto = false;
-
-  String imagePath;
-
   File _image;
-
-  final picker = ImagePicker();
 
   UserLocation userLocation;
 
   int messengerID;
+
+  bool isDelivered;
+
+  final picker = ImagePicker();
+
+  Dio dio;
 
   @override
   void initState() {
@@ -44,6 +47,20 @@ class _DeliverPageState extends State<DeliverPage> {
     UserPreferences().getUser().then((user) {
       messengerID = user.userID;
     });
+
+    isDelivered = checkIfDelivered();
+
+    dio = Dio();
+
+    dio.interceptors.add(
+      RetryOnConnectionChangeInterceptor(
+        requesetRetrier: DioConnectivityRequesetRetrier(
+          dio: Dio(),
+          connectivity: Connectivity(),
+          context: context,
+        ),
+      ),
+    );
   }
 
   @override
@@ -52,12 +69,20 @@ class _DeliverPageState extends State<DeliverPage> {
     super.dispose();
   }
 
+  bool checkIfDelivered() {
+    if (widget.delivery.status == "IN-PROGRESS") {
+      return false;
+    }
+
+    return true;
+  }
+
   Future deliver() async {
-    Flushbar(
+    showFlushbar(Flushbar(
       title: "Delivering!",
       message: "Please wait...",
       duration: Duration(seconds: 3),
-    ).show(context);
+    ));
 
     DateTime dateNow = new DateTime.now();
     String formattedDate = DateFormat('yyyy-MM-dd kk:mm:ss').format(dateNow);
@@ -72,25 +97,29 @@ class _DeliverPageState extends State<DeliverPage> {
       'latitude': userLocation.latitude.toString(),
       'longitude': userLocation.longitude.toString(),
       'accuracy': userLocation.accuracy.toString(),
-      "file": await MultipartFile.fromFile(
+      "file": MultipartFileExtended.fromFileSync(
         _image.path,
         filename: imageName,
       ),
     });
-    Dio dio = new Dio();
 
-    dio.post(AppUrls.deliverURL, data: formData).then((response) {
-      Flushbar(
-        title: "Delivered Successfully!",
-        message: "Check dashboard for more details.",
-        duration: Duration(seconds: 3),
-      ).show(context);
-    }).catchError((error) {
-      Flushbar(
-        title: "Deliver Failed!",
-        message: "Error occured, please contact system administrator.",
-        duration: Duration(seconds: 3),
-      ).show(context);
+    Future.delayed(Duration(milliseconds: 1000), () {
+      dio.post(AppUrls.deliverURL, data: formData).then((response) {
+        Navigator.pop(context);
+        Navigator.pop(context);
+
+        showFlushbar(Flushbar(
+          title: "Delivered Successfully!",
+          message: "Check dashboard for more details.",
+          duration: Duration(seconds: 3),
+        ));
+      }).catchError((error) {
+        Flushbar(
+          title: "Deliver Failed!",
+          message: "Error occured, please contact system administrator.",
+          duration: Duration(seconds: 3),
+        ).show(context);
+      });
     });
   }
 
@@ -100,10 +129,39 @@ class _DeliverPageState extends State<DeliverPage> {
     setState(() {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
-      } else {
-        print('No image selected.');
       }
     });
+  }
+
+  Widget imageWidget() {
+    if (isDelivered == true) {
+      return Center(
+        child: Container(
+          margin: EdgeInsets.all(25),
+          child: Text('Fetching image...'),
+        ),
+      );
+    }
+
+    if (_image == null) {
+      return Center(
+        child: Container(
+          margin: EdgeInsets.all(25),
+          child: Text('No image captured.'),
+        ),
+      );
+    }
+
+    return Image.file(_image);
+  }
+
+  Future showFlushbar(Flushbar instance) {
+    final _route = route.showFlushbar(
+      context: context,
+      flushbar: instance,
+    );
+
+    return Navigator.of(context, rootNavigator: true).push(_route);
   }
 
   @override
@@ -116,11 +174,13 @@ class _DeliverPageState extends State<DeliverPage> {
         children: [
           Container(
             margin: EdgeInsets.only(right: 10),
-            child: FloatingActionButton(
-              child: Icon(Icons.camera_alt),
-              // Provide an onPressed callback.
-              onPressed: getImage,
-            ),
+            child: isDelivered == false
+                ? FloatingActionButton(
+                    child: Icon(Icons.camera_alt),
+                    // Provide an onPressed callback.
+                    onPressed: getImage,
+                  )
+                : SizedBox(),
           ),
           _image != null
               ? FloatingActionButton(
@@ -153,11 +213,7 @@ class _DeliverPageState extends State<DeliverPage> {
               MyLocationDetailComponent(
                 location: userLocation?.fullLocation?.toString(),
               ),
-              Center(
-                child: _image == null
-                    ? Text('No image captured.')
-                    : Image.file(_image),
-              ),
+              imageWidget(), // tinawag ang function na nag rereturn ng Widget()
             ],
           ),
         ),

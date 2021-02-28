@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 import 'package:path_provider/path_provider.dart'
     show getApplicationDocumentsDirectory;
 import 'package:hive/hive.dart';
@@ -88,39 +89,6 @@ class _DeliveriesPageState extends State {
       message: "Success to update deliveries",
       duration: Duration(seconds: 3),
     ).show(context);
-    // messenger.then((user) async {
-    //   String url = AppUrls.deliveriesURL +
-    //       "?query=by_messenger&messenger_id=" +
-    //       user.userID.toString();
-
-    //   try {
-    //     final response = await http.get(url);
-
-    //     if (response.statusCode != 200) {
-    //       Flushbar(
-    //         title: "System Error!",
-    //         message: "Failed to load deliveries",
-    //         duration: Duration(seconds: 3),
-    //       ).show(context);
-    //       return;
-    //     }
-
-    //     await putData(json.decode(response.body)['deliveries']);
-    //     setState(() {});
-
-    //     Flushbar(
-    //       title: "Refreshed Successfully!",
-    //       message: "Success to update deliveries",
-    //       duration: Duration(seconds: 3),
-    //     ).show(context);
-    //   } catch (SocketException) {
-    //     Flushbar(
-    //       title: "No Internet!",
-    //       message: "Failed to refresh deliveries",
-    //       duration: Duration(seconds: 3),
-    //     ).show(context);
-    //   }
-    // });
   }
 
   Future openBox() async {
@@ -146,50 +114,89 @@ class _DeliveriesPageState extends State {
         child: Icon(Icons.refresh),
         backgroundColor: Colors.green,
       ),
-      body: Center(
-        child: FutureBuilder<List<Delivery>>(
-          future: futureDeliveries,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return ListView.builder(
-                itemCount: snapshot.data.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                    child: Column(
-                      children: [
-                        ListTile(
-                          title: Text(
-                            snapshot.data[index].fullName,
-                          ),
-                          subtitle: Text(
-                            snapshot.data[index].subscriberAddress,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          trailing: Text(snapshot.data[index].status),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => DeliverPage(
-                                  delivery:
-                                      snapshot.data[index], // Ipasa ang data
-                                ),
-                              ),
-                            );
-                          },
-                        )
-                      ],
+      body: Column(
+        children: [
+          Expanded(
+            child: OfflineBuilder(
+              connectivityBuilder: (
+                BuildContext context,
+                ConnectivityResult connectivity,
+                Widget child,
+              ) {
+                final bool connected = connectivity != ConnectivityResult.none;
+                return new Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Positioned(
+                      height: 24.0,
+                      left: 0.0,
+                      right: 0.0,
+                      child: Container(
+                        color:
+                            connected ? Color(0xFF00EE44) : Color(0xFFEE4400),
+                        child: Center(
+                          child: Text("${connected ? 'ONLINE' : 'OFFLINE'}"),
+                        ),
+                      ),
                     ),
-                  );
-                },
-              );
-            } else if (snapshot.hasError) {
-              return Text("${snapshot.error}");
-            }
+                    Container(
+                      margin: EdgeInsets.only(top: 20),
+                      child: Center(
+                        child: FutureBuilder<List<Delivery>>(
+                          future: futureDeliveries,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return ListView.builder(
+                                itemCount: snapshot.data.length,
+                                itemBuilder: (context, index) {
+                                  return Card(
+                                    child: Column(
+                                      children: [
+                                        ListTile(
+                                          title: Text(
+                                            snapshot.data[index].fullName,
+                                          ),
+                                          subtitle: Text(
+                                            snapshot
+                                                .data[index].subscriberAddress,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          trailing:
+                                              Text(snapshot.data[index].status),
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    DeliverPage(
+                                                  delivery: snapshot.data[
+                                                      index], // Ipasa ang data
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            } else if (snapshot.hasError) {
+                              return Text("${snapshot.error}");
+                            }
 
-            return CircularProgressIndicator();
-          },
-        ),
+                            return CircularProgressIndicator();
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+              child: SizedBox(), //Hindi ito makikita
+            ),
+          ),
+        ],
       ),
     );
   }

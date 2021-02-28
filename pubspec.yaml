@@ -27,6 +27,8 @@ dependencies:
   image_picker: ^0.6.7+22
   geolocator: ^6.2.1
   location: ^3.0.0
+  connectivity: ^0.4.5+3
+  flutter_offline: "^0.3.0"
   http: ^0.12.2
   dio: ^3.0.10
   hive: ^1.4.4+1
@@ -36,6 +38,7 @@ dependencies:
   provider: ^4.3.1
   shared_preferences: ^0.5.8
   flushbar: ^1.10.4
+  bot_toast: ^3.0.5 
   intl: ^0.16.1
 
   # The following adds the Cupertino Icons font to your application.
