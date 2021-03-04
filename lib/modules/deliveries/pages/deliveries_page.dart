@@ -1,17 +1,19 @@
-import 'dart:convert';
+import 'dart:async';
+import 'dart:io';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_offline/flutter_offline.dart';
-import 'package:path_provider/path_provider.dart'
-    show getApplicationDocumentsDirectory;
+import 'package:jnb_mobile/modules/offline_manager/services/failed_deliveries.dart';
+import 'package:provider/provider.dart';
 import 'package:hive/hive.dart';
-import 'package:http/http.dart' as http;
 import 'package:flushbar/flushbar.dart';
-import 'package:jnb_mobile/modules/deliveries/models/delivery.dart';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:jnb_mobile/modules/authentication/models/user.dart' show User;
 import 'package:jnb_mobile/utilities/shared_preference.dart';
-import 'package:jnb_mobile/utilities/urls.dart' show AppUrls;
 import 'package:jnb_mobile/modules/deliveries/pages/deliver_page.dart'
     show DeliverPage;
+import 'package:jnb_mobile/modules/deliveries/providers/deliveries_provider.dart';
+import 'package:jnb_mobile/delivery.dart';
 
 class DeliveriesPage extends StatefulWidget {
   DeliveriesPage({Key key}) : super(key: key);
@@ -23,87 +25,87 @@ class DeliveriesPage extends StatefulWidget {
 class _DeliveriesPageState extends State {
   Future<User> messenger;
 
-  Future<List<Delivery>> futureDeliveries;
+  DeliveriesProvider deliveryModel;
+
+  List<Delivery> futureDeliveries;
 
   Box box;
+
+  bool checkFailedDeliveries = true;
+
+  bool isLoading = true;
+
+  final failedDeliveriesService = FailedDeliveryService();
+
+  TextEditingController editingController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    futureDeliveries = getDeliveries();
+
     messenger = UserPreferences().getUser();
+
+    Provider.of<DeliveriesProvider>(context, listen: false)
+        .getDeliveries()
+        .then((value) {
+      isLoading = false;
+    });
+
+    sendFailedDeliveries();
   }
 
-  Future<List<Delivery>> getDeliveries() async {
-    await openBox();
+  sendFailedDeliveries() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        var failedDeliveries =
+            await failedDeliveriesService.getFailedDeliveries();
 
-    return messenger.then((user) async {
-      String url = AppUrls.deliveriesURL +
-          "?query=by_messenger&messenger_id=" +
-          user.userID.toString();
-
-      List<Delivery> deliveries;
-
-      try {
-        final response = await http.get(url);
-
-        if (response.statusCode != 200) {
-          Flushbar(
-            title: "System Error!",
-            message: "Failed to load deliveries",
-            duration: Duration(seconds: 3),
-          ).show(context);
-
-          return [];
+        if (failedDeliveries.length > 0) {
+          BotToast.showSimpleNotification(
+              title:
+                  "Redelivering ${failedDeliveries.length} failed deliveries... ");
+          var result =
+              await failedDeliveriesService.redeliverFailedDeliveries();
+          return result;
+        } else {
+          BotToast.showSimpleNotification(title: "No failed deliveries...");
         }
-
-        await putData(json.decode(response.body)['deliveries']);
-      } catch (SocketException) {
-        Flushbar(
-          title: "No Internet!",
-          message: "Failed to load deliveries",
-          duration: Duration(seconds: 3),
-        ).show(context);
       }
-
-      Iterable myMap = box.toMap().values.toList();
-
-      if (myMap.isEmpty) {
-        return [];
-      }
-
-      deliveries =
-          List<Delivery>.from(myMap.map((model) => Delivery.fromJson(model)));
-
-      return deliveries;
-    });
+    } on SocketException catch (_) {
+      print('not connected');
+    }
+    return false;
   }
 
   refreshDeliveries() async {
-    setState(() {
-      futureDeliveries = getDeliveries();
-    });
+    var result = await sendFailedDeliveries();
+    try {
+      final networkResult = await InternetAddress.lookup('google.com');
+      if (networkResult.isNotEmpty && networkResult[0].rawAddress.isNotEmpty) {
+        Flushbar(
+          title: "Refreshed Successfully!",
+          message: "Success to update deliveries",
+          duration: Duration(seconds: 3),
+        ).show(context);
 
-    Flushbar(
-      title: "Refreshed Successfully!",
-      message: "Success to update deliveries",
-      duration: Duration(seconds: 3),
-    ).show(context);
-  }
-
-  Future openBox() async {
-    var dir = await getApplicationDocumentsDirectory();
-    Hive.init(dir.path);
-    box = await Hive.openBox('data');
-    return;
-  }
-
-  Future putData(data) async {
-    await box.clear();
-
-    for (var d in data) {
-      box.add(d);
+        if (result) {
+          Provider.of<DeliveriesProvider>(context, listen: false)
+              .getDeliveries();
+        }
+      }
+    } on SocketException catch (_) {
+      Flushbar(
+        title: "No Internet!",
+        message: "Failed to update deliveries",
+        duration: Duration(seconds: 3),
+      ).show(context);
     }
+  }
+
+  void filterSearchResults(String query) {
+    Provider.of<DeliveriesProvider>(context, listen: false)
+        .searchDeliveries(query.toUpperCase());
   }
 
   @override
@@ -124,6 +126,7 @@ class _DeliveriesPageState extends State {
                 Widget child,
               ) {
                 final bool connected = connectivity != ConnectivityResult.none;
+
                 return new Stack(
                   fit: StackFit.expand,
                   children: [
@@ -140,52 +143,74 @@ class _DeliveriesPageState extends State {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.only(top: 20),
+                      margin: EdgeInsets.only(top: 25),
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: TextField(
+                          onChanged: (value) {
+                            filterSearchResults(value);
+                          },
+                          controller: editingController,
+                          decoration: InputDecoration(
+                              labelText: "Search",
+                              hintText: "Search",
+                              prefixIcon: Icon(Icons.search),
+                              border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(25.0)))),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: 100),
                       child: Center(
-                        child: FutureBuilder<List<Delivery>>(
-                          future: futureDeliveries,
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return ListView.builder(
-                                itemCount: snapshot.data.length,
-                                itemBuilder: (context, index) {
-                                  return Card(
-                                    child: Column(
-                                      children: [
-                                        ListTile(
-                                          title: Text(
-                                            snapshot.data[index].fullName,
-                                          ),
-                                          subtitle: Text(
-                                            snapshot
-                                                .data[index].subscriberAddress,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          trailing:
-                                              Text(snapshot.data[index].status),
-                                          onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    DeliverPage(
-                                                  delivery: snapshot.data[
-                                                      index], // Ipasa ang data
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                },
-                              );
-                            } else if (snapshot.hasError) {
-                              return Text("${snapshot.error}");
+                        child: Consumer<DeliveriesProvider>(
+                          builder: (context, provider, child) {
+                            if (isLoading) {
+                              return CircularProgressIndicator();
                             }
 
-                            return CircularProgressIndicator();
+                            if (provider.deliveriesList.isEmpty) {
+                              return Text("No deliveries yet");
+                            }
+
+                            return ListView.builder(
+                              itemCount: provider.deliveriesList.length,
+                              itemBuilder: (context, index) {
+                                return Card(
+                                  child: Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          provider
+                                              .deliveriesList[index].fullName,
+                                        ),
+                                        subtitle: Text(
+                                          provider.deliveriesList[index]
+                                              .subscriberAddress,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        trailing: Text(provider
+                                            .deliveriesList[index].status),
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => DeliverPage(
+                                                delivery: provider
+                                                        .deliveriesList[
+                                                    index], // Ipasa ang data
+                                                hiveIndex: index,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      )
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
                           },
                         ),
                       ),

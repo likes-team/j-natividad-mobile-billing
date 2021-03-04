@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jnb_mobile/modules/offline_manager/services/failed_deliveries.dart';
 import 'utilities/colors.dart' show MyColors;
 import 'modules/home/components/app_bar.dart' show AppBarComponent;
 import 'modules/home/components/drawer.dart' show DrawerComponent;
@@ -20,6 +21,8 @@ class _HomeState extends State<Home> {
   String _title;
   int _currentPage = 1;
 
+  final failedDeliveriesService = FailedDeliveryService();
+
   final List<Widget> _pages = [
     DashboardPage(),
     DeliveriesPage(),
@@ -30,6 +33,7 @@ class _HomeState extends State<Home> {
   @override
   initState() {
     super.initState();
+
     _title = 'Deliveries';
   }
 

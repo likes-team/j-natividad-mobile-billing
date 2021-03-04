@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:jnb_mobile/modules/deliveries/models/delivery.dart';
+// import 'package:jnb_mobile/modules/deliveries/models/delivery.dart';
 import 'package:jnb_mobile/utilities/colors.dart';
+import 'package:jnb_mobile/delivery.dart';
 
 class SubscriberDetailComponent extends StatelessWidget {
   final Delivery delivery;

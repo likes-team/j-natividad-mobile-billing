@@ -2,10 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:bot_toast/bot_toast.dart';
+import 'package:jnb_mobile/areas.dart';
+import 'package:jnb_mobile/delivery.dart';
+import 'package:jnb_mobile/failed_delivery.dart';
 import 'package:jnb_mobile/modules/authentication/pages/login.dart';
 import 'package:jnb_mobile/modules/authentication/providers/user.dart';
+import 'package:jnb_mobile/modules/deliveries/providers/deliveries_provider.dart';
 import 'package:jnb_mobile/modules/location/models/user_location_model.dart';
 import 'package:jnb_mobile/modules/location/services/location_service.dart';
+import 'package:jnb_mobile/sub_areas.dart';
 import 'package:provider/provider.dart';
 import 'package:jnb_mobile/modules/authentication/providers/authentication.dart';
 import 'package:jnb_mobile/utilities/shared_preference.dart'
@@ -18,6 +23,10 @@ void main() async {
 
   await Hive.initFlutter();
 
+  Hive.registerAdapter(DeliveryAdapter());
+  Hive.registerAdapter(FailedDeliveryAdapter());
+  Hive.registerAdapter(SubAreaAdapter());
+  Hive.registerAdapter(AreaAdapter());
   runApp(MyApp());
 }
 
@@ -33,6 +42,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => UserProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => DeliveriesProvider(),
         ),
         StreamProvider<UserLocation>(
           create: (context) => LocationService().locationStream,
