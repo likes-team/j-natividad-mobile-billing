@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:jnb_mobile/modules/deliveries/providers/areas_provider.dart';
 import 'package:jnb_mobile/modules/offline_manager/services/failed_deliveries.dart';
 import 'package:provider/provider.dart';
 import 'package:hive/hive.dart';
@@ -49,7 +50,11 @@ class _DeliveriesPageState extends State {
         .getDeliveries()
         .then((value) {
       isLoading = false;
+    }).catchError((error) {
+      print(error);
     });
+
+    Provider.of<AreasProvider>(context, listen: false).getAreas();
 
     sendFailedDeliveries();
   }
@@ -69,29 +74,39 @@ class _DeliveriesPageState extends State {
               await failedDeliveriesService.redeliverFailedDeliveries();
           return result;
         } else {
-          BotToast.showSimpleNotification(title: "No failed deliveries...");
+          BotToast.showSimpleNotification(
+            title: "No failed deliveries.",
+            subTitle: "Press refresh button to check again.",
+            backgroundColor: Colors.blue[200],
+          );
         }
       }
     } on SocketException catch (_) {
       print('not connected');
+      return false;
     }
-    return false;
+    return true;
   }
 
   refreshDeliveries() async {
+    var selectedArea =
+        Provider.of<AreasProvider>(context, listen: false).selectedArea;
+
+    var selectedSubArea =
+        Provider.of<AreasProvider>(context, listen: false).selectedSubArea;
+
     var result = await sendFailedDeliveries();
     try {
       final networkResult = await InternetAddress.lookup('google.com');
       if (networkResult.isNotEmpty && networkResult[0].rawAddress.isNotEmpty) {
-        Flushbar(
-          title: "Refreshed Successfully!",
-          message: "Success to update deliveries",
-          duration: Duration(seconds: 3),
-        ).show(context);
-
         if (result) {
           Provider.of<DeliveriesProvider>(context, listen: false)
-              .getDeliveries();
+              .refreshDeliveries(area: selectedArea, subArea: selectedSubArea);
+          Flushbar(
+            title: "Refreshed Successfully!",
+            message: "Success to update deliveries",
+            duration: Duration(seconds: 3),
+          ).show(context);
         }
       }
     } on SocketException catch (_) {
@@ -181,6 +196,7 @@ class _DeliveriesPageState extends State {
                                   child: Column(
                                     children: [
                                       ListTile(
+                                        leading: Icon(Icons.delivery_dining),
                                         title: Text(
                                           provider
                                               .deliveriesList[index].fullName,

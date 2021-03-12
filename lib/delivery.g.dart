@@ -27,13 +27,17 @@ class DeliveryAdapter extends TypeAdapter<Delivery> {
       deliveryDate: fields[7] as String,
       latitude: fields[9] as String,
       longitude: fields[8] as String,
+      areaID: fields[10] as int,
+      areaName: fields[11] as String,
+      subAreaID: fields[12] as int,
+      subAreaName: fields[13] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Delivery obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(14)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -53,7 +57,15 @@ class DeliveryAdapter extends TypeAdapter<Delivery> {
       ..writeByte(8)
       ..write(obj.longitude)
       ..writeByte(9)
-      ..write(obj.latitude);
+      ..write(obj.latitude)
+      ..writeByte(10)
+      ..write(obj.areaID)
+      ..writeByte(11)
+      ..write(obj.areaName)
+      ..writeByte(12)
+      ..write(obj.subAreaID)
+      ..writeByte(13)
+      ..write(obj.subAreaName);
   }
 
   @override

@@ -9,22 +9,42 @@ class Delivery {
 
   @HiveField(1)
   final String status;
+
   @HiveField(2)
   final int subscriberID;
+
   @HiveField(3)
   final String subscriberFname;
+
   @HiveField(4)
   final String subscriberLname;
+
   @HiveField(5)
   final String subscriberAddress;
+
   @HiveField(6)
   final String subscriberEmail;
+
   @HiveField(7)
   final String deliveryDate;
+
   @HiveField(8)
   final String longitude;
+
   @HiveField(9)
   final String latitude;
+
+  @HiveField(10)
+  final int areaID;
+
+  @HiveField(11)
+  final String areaName;
+
+  @HiveField(12)
+  final int subAreaID;
+
+  @HiveField(13)
+  final String subAreaName;
 
   Delivery({
     this.id,
@@ -37,6 +57,10 @@ class Delivery {
     this.deliveryDate,
     this.latitude,
     this.longitude,
+    this.areaID,
+    this.areaName,
+    this.subAreaID,
+    this.subAreaName,
   });
 
   factory Delivery.fromJson(json) {
@@ -52,6 +76,10 @@ class Delivery {
         deliveryDate: json['delivery_date'],
         latitude: json['latitude'],
         longitude: json['longitude'],
+        areaID: json['area_id'],
+        areaName: json['area_name'],
+        subAreaID: json['sub_area_id'],
+        subAreaName: json['sub_area_name'],
       );
     }
     return null;

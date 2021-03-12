@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
@@ -30,8 +31,10 @@ class DeliveriesProvider with ChangeNotifier {
           return Future.value(false);
         }
         await putData(json.decode(response.body)['deliveries']);
-      } catch (SocketException) {
+      } on SocketException catch (_) {
         print("Delivery Provider: Socket error");
+      } catch (e) {
+        throw e;
       }
 
       _deliveriesList = box.values.toList();
@@ -42,7 +45,7 @@ class DeliveriesProvider with ChangeNotifier {
     });
   }
 
-  refreshDeliveries() async {
+  refreshDeliveries({@required area, @required subArea}) async {
     var box = await Hive.openBox<Delivery>(_deliveriesBoxName);
 
     var messenger = UserPreferences().getUser();
@@ -64,7 +67,22 @@ class DeliveriesProvider with ChangeNotifier {
         return [];
       }
 
+      if (area != "ALL") {
+        _deliveriesList =
+            box.values.where((delivery) => delivery.areaName == area).toList();
+
+        if (subArea != "ALL") {
+          _deliveriesList = _deliveriesList
+              .where((delivery) => delivery.subAreaName == subArea)
+              .toList();
+        }
+
+        notifyListeners();
+        return null;
+      }
+
       _deliveriesList = box.values.toList();
+
       notifyListeners();
     });
   }
@@ -99,8 +117,8 @@ class DeliveriesProvider with ChangeNotifier {
     var deliveries =
         List<Delivery>.from(jsonList.map((model) => Delivery.fromJson(model)));
 
-    for (var d in deliveries) {
-      box.add(d);
+    for (var delivery in deliveries) {
+      box.put(delivery.id, delivery);
     }
   }
 
@@ -123,7 +141,7 @@ class DeliveriesProvider with ChangeNotifier {
   updateItem(int index, Delivery delivery) {
     final box = Hive.box<Delivery>(_deliveriesBoxName);
 
-    box.putAt(index, delivery);
+    box.put(delivery.id, delivery);
 
     _deliveriesList = box.values.toList();
 

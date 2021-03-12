@@ -9,7 +9,7 @@
     
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="jnb_mobile"
+        android:label="JNatividad Billing"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

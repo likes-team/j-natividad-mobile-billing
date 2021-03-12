@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:jnb_mobile/utilities/colors.dart';
 
-class MyLocationDetailComponent extends StatelessWidget {
+class MyLocationDetailUpdaterComponent extends StatelessWidget {
   final location;
 
-  MyLocationDetailComponent({Key key, @required this.location})
+  MyLocationDetailUpdaterComponent({Key key, @required this.location})
       : super(key: key);
 
   @override
@@ -53,6 +53,9 @@ class MyLocationDetailComponent extends StatelessWidget {
                     color: location != null ? Colors.green : Colors.red),
               ),
             ),
+            SizedBox(
+              height: 20,
+            )
           ],
         ),
       ),

@@ -83,7 +83,7 @@ class FailedDeliveryService {
         }).catchError((error) {
           _errorCounter += 1;
           BotToast.showSimpleNotification(
-              title: "$_errorCounter deliveries, Delivered Succesfully!");
+              title: "$_errorCounter deliveries, Failed to redeliver!");
         });
       });
     });

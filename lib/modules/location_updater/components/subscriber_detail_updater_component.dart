@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:jnb_mobile/utilities/colors.dart';
 import 'package:jnb_mobile/delivery.dart';
 
-class SubscriberDetailComponent extends StatelessWidget {
+class SubscriberDetailUpdaterComponent extends StatelessWidget {
   final Delivery delivery;
 
-  SubscriberDetailComponent({Key key, @required this.delivery})
+  SubscriberDetailUpdaterComponent({Key key, @required this.delivery})
       : super(key: key);
 
   @override
@@ -69,7 +69,7 @@ class SubscriberDetailComponent extends StatelessWidget {
               alignment: Alignment.centerLeft,
               margin: EdgeInsets.only(bottom: 0, left: 10),
               child: ListTile(
-                title: Text(delivery.areaName),
+                title: Text(delivery.areaName ?? "No area"),
                 subtitle: Text("Area"),
                 leading: Icon(Icons.location_city),
               ),
@@ -79,7 +79,7 @@ class SubscriberDetailComponent extends StatelessWidget {
               alignment: Alignment.centerLeft,
               margin: EdgeInsets.only(bottom: 0, left: 10),
               child: ListTile(
-                title: Text(delivery.subAreaName),
+                title: Text(delivery.subAreaName ?? "No sub area"),
                 subtitle: Text("Sub Area"),
                 leading: Icon(Icons.location_city),
               ),
@@ -101,10 +101,10 @@ class SubscriberDetailComponent extends StatelessWidget {
               child: ListTile(
                 title: Text(
                     delivery.coordinates ??
-                        'No location, please update location first!',
+                        'Press update location button at the bottom of the page to update subscriber\'s location.',
                     style: TextStyle(
                         color: delivery.coordinates == null
-                            ? Colors.red
+                            ? Colors.yellow[800]
                             : Colors.green)),
                 subtitle: Text("Latitude - Longitude"),
                 leading: Icon(Icons.pin_drop),

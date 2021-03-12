@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:jnb_mobile/areas.dart';
+import 'package:jnb_mobile/modules/deliveries/providers/areas_provider.dart';
+import 'package:jnb_mobile/modules/deliveries/providers/deliveries_provider.dart';
+import 'package:jnb_mobile/sub_areas.dart';
+import 'package:provider/provider.dart';
 import '../../../utilities/colors.dart' show MyColors;
 
 class AppBarComponent extends StatelessWidget implements PreferredSizeWidget {
@@ -11,8 +16,25 @@ class AppBarComponent extends StatelessWidget implements PreferredSizeWidget {
       : preferredSize = Size.fromHeight(50.0),
         super(key: key);
 
-  Widget sortDialogWidget() {
+  _confirmFilter(context) {
+    var area = Provider.of<AreasProvider>(context, listen: false).selectedArea;
+    var subArea =
+        Provider.of<AreasProvider>(context, listen: false).selectedSubArea;
+
+    Provider.of<DeliveriesProvider>(context, listen: false)
+        .refreshDeliveries(area: area, subArea: subArea);
+
+    Navigator.pop(context, false);
+  }
+
+  Widget sortDialogWidget(areas, subAreas, context) {
     return AlertDialog(
+      actions: [
+        FlatButton(
+          child: Text("OK"),
+          onPressed: () => _confirmFilter(context),
+        )
+      ],
       title: Text("Filter"),
       content: Container(
         height: 200,
@@ -21,44 +43,48 @@ class AppBarComponent extends StatelessWidget implements PreferredSizeWidget {
             SizedBox(
               height: 15,
             ),
-            ListTile(
-              title: Text("Area"),
-              subtitle: DropdownButton<String>(
-                  // value: filter.getFilterPersonality(),
-                  onChanged: (String newValue) {
-                    // filter.setFilterPersonality(newValue);
-                  },
-                  items: [
-                    'All',
-                    // localization.filterPersonalityCranky,
-                    // localization.filterPersonalityJock,
-                  ].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList()),
+            Consumer<AreasProvider>(
+              builder: (context, provider, child) {
+                return ListTile(
+                    title: Text("Area"),
+                    subtitle: DropdownButton<String>(
+                        value: provider.selectedArea,
+                        onChanged: (String newValue) {
+                          provider.selectedArea = newValue;
+                        },
+                        items:
+                            areas.map<DropdownMenuItem<String>>((Area value) {
+                          return DropdownMenuItem<String>(
+                            value: value.areaName,
+                            child: Text(value.areaName),
+                          );
+                        }).toList()));
+              },
             ),
             SizedBox(
               height: 20,
             ),
-            ListTile(
-              title: Text("Sub Area"),
-              subtitle: DropdownButton<String>(
-                  // value: filter.getFilterPersonality(),
-                  onChanged: (String newValue) {
-                    // filter.setFilterPersonality(newValue);
-                  },
-                  items: [
-                    'All',
-                    // localization.filterPersonalityCranky,
-                    // localization.filterPersonalityJock,
-                  ].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList()),
+            Expanded(
+              child: Consumer<AreasProvider>(
+                builder: (context, provider, _) {
+                  return ListTile(
+                    title: Text("Sub Area"),
+                    subtitle: DropdownButton<String>(
+                        value: provider.selectedSubArea,
+                        onChanged: (String newValue) {
+                          provider.selectedSubArea = newValue;
+                        },
+                        isExpanded: true,
+                        items: provider.subAreasList
+                            .map<DropdownMenuItem<String>>((SubArea value) {
+                          return DropdownMenuItem<String>(
+                            value: value.subAreaName,
+                            child: Text(value.subAreaName),
+                          );
+                        }).toList()),
+                  );
+                },
+              ),
             ),
           ],
         ),
@@ -68,11 +94,14 @@ class AppBarComponent extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    var areas = Provider.of<AreasProvider>(context).areaList;
+    var subAreas = Provider.of<AreasProvider>(context).subAreasList;
+
     _showSortDialog() {
       showDialog(
           context: context,
           builder: (_) {
-            return sortDialogWidget();
+            return sortDialogWidget(areas, subAreas, context);
           });
     }
 

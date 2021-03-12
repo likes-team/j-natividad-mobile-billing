@@ -1,19 +1,19 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dio/dio.dart';
 import 'package:jnb_mobile/modules/deliveries/providers/deliveries_provider.dart';
+import 'package:jnb_mobile/modules/location_updater/pages/update_page.dart';
 import 'package:jnb_mobile/modules/offline_manager/multipart_extended.dart';
 import 'package:jnb_mobile/modules/offline_manager/services/failed_deliveries.dart';
 import 'package:jnb_mobile/utilities/urls.dart';
 import 'package:provider/provider.dart';
-import 'package:flushbar/flushbar.dart';
-import 'package:flushbar/flushbar_route.dart' as route;
 import 'package:intl/intl.dart';
-import 'package:jnb_mobile/modules/offline_manager/interceptors/dio_connectivity_request_retrier.dart';
-import 'package:jnb_mobile/modules/offline_manager/interceptors/retry_interceptor.dart';
+// import 'package:jnb_mobile/modules/offline_manager/interceptors/dio_connectivity_request_retrier.dart';
+// import 'package:jnb_mobile/modules/offline_manager/interceptors/retry_interceptor.dart';
 import 'package:jnb_mobile/utilities/shared_preference.dart';
 import 'package:jnb_mobile/modules/deliveries/components/myLocationDetailComponent.dart';
 import 'package:jnb_mobile/modules/deliveries/components/subscriber_detail_component.dart';
@@ -40,7 +40,11 @@ class _DeliverPageState extends State<DeliverPage> {
 
   int messengerID;
 
-  bool isDelivered;
+  bool isDelivered; // Pag status ay delivered na
+
+  bool isDelivering = false; // Pag status ay delivering palang
+
+  bool hasImage = false;
 
   final picker = ImagePicker();
 
@@ -59,6 +63,8 @@ class _DeliverPageState extends State<DeliverPage> {
     });
 
     isDelivered = checkIfDelivered();
+
+    hasImage = checkIfDelivered();
 
     dio = Dio();
 
@@ -87,12 +93,16 @@ class _DeliverPageState extends State<DeliverPage> {
     return true;
   }
 
-  Future deliver() async {
-    showFlushbar(Flushbar(
-      title: "Delivering!",
-      message: "Please wait...",
-      duration: Duration(seconds: 3),
-    ));
+  Future deliver(
+      BuildContext context, DeliveriesProvider deliveriesProvider) async {
+    setState(() {
+      isDelivering = true;
+    });
+
+    BotToast.showSimpleNotification(
+      title: "Delivering, Please wait...",
+      backgroundColor: Colors.blue[200],
+    );
 
     Delivery deliveryUpdateObject = Delivery(
       id: widget.delivery.id,
@@ -121,7 +131,12 @@ class _DeliverPageState extends State<DeliverPage> {
         print('connected');
       }
     } on SocketException catch (_) {
-      print('not connected');
+      BotToast.showSimpleNotification(
+        title: "No Internet",
+        subTitle: "Delivery will resend when internet is available.",
+        backgroundColor: Colors.blue[200],
+      );
+
       failedDeliveryService.addFailedDelivery(
         delivery: widget.delivery,
         messengerID: messengerID,
@@ -133,7 +148,6 @@ class _DeliverPageState extends State<DeliverPage> {
         imageName: imageName,
       );
       Future.delayed(Duration(milliseconds: 1000), () {
-        Navigator.pop(context);
         Navigator.pop(context);
       });
 
@@ -169,24 +183,22 @@ class _DeliverPageState extends State<DeliverPage> {
           status: response.data['delivery']['status'],
         );
 
-        Provider.of<DeliveriesProvider>(context, listen: false).updateItem(
-            widget.hiveIndex,
+        deliveriesProvider.updateItem(widget.hiveIndex,
             deliveryUpdateObject); // Update yung status ng delivery sa hive
 
-        Navigator.pop(context);
-        Navigator.pop(context);
-
-        showFlushbar(Flushbar(
-          title: "Delivered Successfully!",
-          message: "Check dashboard for more details.",
-          duration: Duration(seconds: 3),
-        ));
+        BotToast.showSimpleNotification(
+          title: "Delivered Successfully",
+          subTitle: " Check dashboard for more details.",
+          backgroundColor: Colors.green,
+        );
       }).catchError((error) {
-        Flushbar(
-          title: "Deliver Failed!",
-          message: "Error occured, please contact system administrator.",
-          duration: Duration(seconds: 3),
-        ).show(context);
+        BotToast.showSimpleNotification(
+          title: "Deliver Failed",
+          duration: Duration(seconds: 5),
+          subTitle:
+              "Error occured, please contact system administrator\n Error: $error",
+          backgroundColor: Colors.red,
+        );
       });
     });
 
@@ -199,6 +211,7 @@ class _DeliverPageState extends State<DeliverPage> {
     setState(() {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
+        hasImage = true;
       }
     });
   }
@@ -209,6 +222,19 @@ class _DeliverPageState extends State<DeliverPage> {
         child: Container(
           margin: EdgeInsets.all(25),
           child: Text('Fetching image...'),
+        ),
+      );
+    }
+
+    if (widget.delivery.coordinates == null) {
+      return Center(
+        child: Container(
+          margin: EdgeInsets.only(top: 25, left: 25, right: 25, bottom: 75),
+          child: Text(
+            "No subscriber coordinates!, please update subscriber coordinates first to capture an image.",
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.red),
+          ),
         ),
       );
     }
@@ -225,38 +251,85 @@ class _DeliverPageState extends State<DeliverPage> {
     return Image.file(_image);
   }
 
-  Future showFlushbar(Flushbar instance) {
-    final _route = route.showFlushbar(
-      context: context,
-      flushbar: instance,
-    );
+  Widget setUpDeliverButton() {
+    if (isDelivered == false) {
+      return Icon(Icons.send);
+    } else if (isDelivering == true) {
+      return CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+      );
+    }
 
-    return Navigator.of(context, rootNavigator: true).push(_route);
+    return Icon(Icons.check, color: Colors.white);
+  }
+
+  _goToLocationUpdaterPage() {
+    Navigator.of(context).push(_createRoute());
+  }
+
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   model.valueThatComesFromAProvider = Provider.of<MyDependency>(context);
+  // }
+
+  Route _createRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => UpdatePage(
+        delivery: widget.delivery, // Ipasa ang data
+        hiveIndex: widget.hiveIndex,
+      ),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(0.0, 1.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     userLocation = Provider.of<UserLocation>(context);
+    DeliveriesProvider deliveriesProvider =
+        Provider.of<DeliveriesProvider>(context);
+
+    // to be continued, convert parameters to provider values to update values after location update
 
     return Scaffold(
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
+          widget.delivery.coordinates == null
+              ? FloatingActionButton(
+                  child: Icon(Icons.edit),
+                  onPressed: _goToLocationUpdaterPage,
+                  tooltip: "Update subscriber's location",
+                )
+              : SizedBox(),
           Container(
             margin: EdgeInsets.only(right: 10),
-            child: isDelivered == false
+            child: isDelivered == false && widget.delivery.coordinates != null
                 ? FloatingActionButton(
                     child: Icon(Icons.camera_alt),
-                    // Provide an onPressed callback.
                     onPressed: getImage,
                   )
                 : SizedBox(),
           ),
-          _image != null
+          hasImage != false
               ? FloatingActionButton(
+                  child: setUpDeliverButton(),
                   heroTag: "btnDeliver",
-                  onPressed: deliver,
-                  child: Icon(Icons.send),
+                  onPressed: isDelivered == false
+                      ? () => deliver(context, deliveriesProvider)
+                      : () => {},
                   backgroundColor: Colors.green,
                 )
               : SizedBox(), // Walang ipapakita na send button
