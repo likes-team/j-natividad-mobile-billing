@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import '../components/user_information.dart' show UserInfoComponent;
-import '../components/bank_details.dart' show BankDetailsComponent;
-import '../components/other_details.dart' show OtherDetailsComponent;
+import 'package:jnb_mobile/modules/profile/components/profile_template.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -11,20 +9,15 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final defaultPicture = 'assets/image/default-avatar.jpg';
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
-      bottom: false,
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            UserInfoComponent(),
-            BankDetailsComponent(),
-            OtherDetailsComponent()
-          ],
-        ),
-      ),
+    return ProfileTemplate(
+      firstname: 'Carlo',
+      lastname: 'Dalisay',
+      username: 'carlo.lang.malakas',
+      picturepath: defaultPicture,
     );
   }
 }

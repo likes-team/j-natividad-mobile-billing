@@ -12,6 +12,7 @@ import 'package:jnb_mobile/modules/deliveries/providers/deliveries_provider.dart
 import 'package:jnb_mobile/modules/location/models/user_location_model.dart';
 import 'package:jnb_mobile/modules/location/services/location_service.dart';
 import 'package:jnb_mobile/sub_areas.dart';
+import 'package:jnb_mobile/utilities/betaTheme.dart';
 import 'package:provider/provider.dart';
 import 'package:jnb_mobile/modules/authentication/providers/authentication.dart';
 import 'package:jnb_mobile/utilities/shared_preference.dart'
@@ -64,6 +65,7 @@ class MyApp extends StatelessWidget {
         navigatorObservers: [
           BotToastNavigatorObserver()
         ], //2. registered route observer
+        theme: betaTheme(),
         home: FutureBuilder(
           future: getUserData(),
           builder: (context, snapshot) {
