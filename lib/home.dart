@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jnb_mobile/modules/offline_manager/services/failed_deliveries.dart';
+import 'package:jnb_mobile/modules/profile/pages/profile.dart';
 import 'utilities/colors.dart' show MyColors;
 import 'modules/home/components/app_bar.dart' show AppBarComponent;
 import 'modules/home/components/drawer.dart' show DrawerComponent;
@@ -27,7 +28,7 @@ class _HomeState extends State<Home> {
     DashboardPage(),
     DeliveriesPage(),
     LocationUpdaterPage(),
-    // ProfilePage(),
+    ProfilePage(),
   ];
 
   @override
