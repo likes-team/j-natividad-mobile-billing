@@ -67,10 +67,10 @@ class _HomeState extends State<Home> {
             icon: Icon(Icons.edit_location),
             label: 'Location Updater',
           ),
-          // BottomNavigationBarItem(
-          //   icon: Icon(Icons.person),
-          //   label: 'Profile',
-          // ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
         ],
       ),
     );
