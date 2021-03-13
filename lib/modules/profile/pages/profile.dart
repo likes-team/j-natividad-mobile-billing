@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:jnb_mobile/modules/authentication/providers/user.dart';
 import 'package:jnb_mobile/modules/profile/components/profile_template.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -13,11 +15,13 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return ProfileTemplate(
-      firstname: 'Carlo',
-      lastname: 'Dalisay',
-      username: 'carlo.lang.malakas',
-      picturepath: defaultPicture,
-    );
+    return Consumer<UserProvider>(builder: (context, userProvider, _) {
+      return ProfileTemplate(
+        firstname: userProvider.user.fname ?? 'fname',
+        lastname: userProvider.user.lname ?? 'lname',
+        username: userProvider.user.username ?? 'username',
+        picturepath: defaultPicture,
+      );
+    });
   }
 }
