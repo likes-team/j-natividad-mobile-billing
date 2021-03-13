@@ -14,6 +14,18 @@ class DeliveriesProvider with ChangeNotifier {
 
   List get deliveriesList => _deliveriesList;
 
+  Delivery _selectedDelivery;
+
+  Delivery get selectedDelivery => _selectedDelivery;
+
+  selectDelivery(int id) async {
+    var box = await Hive.openBox<Delivery>(_deliveriesBoxName);
+
+    _selectedDelivery = box.get(id);
+
+    notifyListeners();
+  }
+
   Future<bool> getDeliveries() async {
     var box = await Hive.openBox<Delivery>(_deliveriesBoxName);
 
@@ -138,7 +150,7 @@ class DeliveriesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  updateItem(int index, Delivery delivery) {
+  updateItem(Delivery delivery) {
     final box = Hive.box<Delivery>(_deliveriesBoxName);
 
     box.put(delivery.id, delivery);

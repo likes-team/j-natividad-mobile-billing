@@ -1,5 +1,6 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:jnb_mobile/delivery.dart';
@@ -79,11 +80,13 @@ class FailedDeliveryService {
           removeFailedDelivery(value);
 
           BotToast.showSimpleNotification(
-              title: "$_successCounter deliveries, Delivered Succesfully!");
+              title: "$_successCounter deliveries, Delivered Succesfully!",
+              backgroundColor: Colors.green);
         }).catchError((error) {
           _errorCounter += 1;
           BotToast.showSimpleNotification(
-              title: "$_errorCounter deliveries, Failed to redeliver!");
+              title: "$_errorCounter deliveries, Failed to redeliver!",
+              backgroundColor: Colors.red);
         });
       });
     });

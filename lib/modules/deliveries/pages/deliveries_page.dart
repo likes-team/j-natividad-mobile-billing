@@ -69,7 +69,8 @@ class _DeliveriesPageState extends State {
         if (failedDeliveries.length > 0) {
           BotToast.showSimpleNotification(
               title:
-                  "Redelivering ${failedDeliveries.length} failed deliveries... ");
+                  "Redelivering ${failedDeliveries.length} failed deliveries... ",
+              backgroundColor: Colors.blue[200]);
           var result =
               await failedDeliveriesService.redeliverFailedDeliveries();
           return result;
@@ -209,15 +210,17 @@ class _DeliveriesPageState extends State {
                                         trailing: Text(provider
                                             .deliveriesList[index].status),
                                         onTap: () {
+                                          Provider.of<DeliveriesProvider>(
+                                                  context,
+                                                  listen: false)
+                                              .selectDelivery(provider
+                                                  .deliveriesList[index].id);
+
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (context) => DeliverPage(
-                                                delivery: provider
-                                                        .deliveriesList[
-                                                    index], // Ipasa ang data
-                                                hiveIndex: index,
-                                              ),
+                                              builder: (context) =>
+                                                  DeliverPage(),
                                             ),
                                           );
                                         },

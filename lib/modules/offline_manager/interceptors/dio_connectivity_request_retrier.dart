@@ -55,8 +55,8 @@ class DioConnectivityRequesetRetrier {
         );
 
         BotToast.showSimpleNotification(
-            title:
-                "Pending deliveries are delivered successfully!"); // popup a notification toast;
+            title: "Pending deliveries are delivered successfully!",
+            backgroundColor: Colors.green); // popup a notification toast;
 
       }
     });

@@ -66,70 +66,71 @@ class _UpdatePageState extends State<UpdatePage> {
       backgroundColor: Colors.blue[200],
     );
 
+    Delivery deliveryUpdateObject = Delivery(
+      id: widget.delivery.id,
+      deliveryDate: widget.delivery.deliveryDate,
+      latitude: userLocation.latitude.toString(),
+      longitude: userLocation.longitude.toString(),
+      subscriberAddress: widget.delivery.subscriberAddress,
+      subscriberEmail: widget.delivery.subscriberEmail,
+      subscriberFname: widget.delivery.subscriberFname,
+      subscriberLname: widget.delivery.subscriberLname,
+      subscriberID: widget.delivery.subscriberID,
+      areaID: widget.delivery.areaID,
+      areaName: widget.delivery.areaName,
+      subAreaID: widget.delivery.subAreaID,
+      subAreaName: widget.delivery.subAreaName,
+      status: widget.delivery.status,
+    );
+
+    Provider.of<DeliveriesProvider>(context, listen: false).updateItem(
+        deliveryUpdateObject); // Update yung status ng delivery sa hive
+
+    Provider.of<DeliveriesProvider>(context, listen: false)
+        .selectDelivery(widget.delivery.id);
+
     try {
       final result = await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        print('connected');
+        Map<String, dynamic> postData = {
+          "latitude": userLocation.latitude.toString(),
+          "longitude": userLocation.longitude.toString(),
+          "accuracy": userLocation.accuracy.toString(),
+          "messenger_id": messengerID,
+          "subscriber_id": widget.delivery.subscriberID,
+        };
+
+        Future.delayed(Duration(milliseconds: 1000), () {
+          dio.post(AppUrls.updateLocationURL, data: postData).then((response) {
+            Navigator.pop(context);
+
+            BotToast.showSimpleNotification(
+              title: "Location Updated Successfully!",
+              subTitle: "You can now perform delivery for this subscriber.",
+              backgroundColor: Colors.green,
+            );
+          }).catchError((error) {
+            BotToast.showSimpleNotification(
+              title: "Error Occured!",
+              subTitle:
+                  "Error occured, please contact system administrator or try again.",
+              backgroundColor: Colors.red,
+            );
+          });
+        });
+
+        return Future.value(true);
       }
     } on SocketException catch (_) {
       BotToast.showSimpleNotification(
         title: "No Internet",
-        subTitle: "Updating location failed, please try again.",
-        backgroundColor: Colors.blue[200],
+        subTitle: "Updating with last identified location.",
+        backgroundColor: Colors.yellow[200],
       );
-      //todo catch update request
+      Navigator.pop(context);
+
       return Future.value(false);
     }
-
-    Map<String, dynamic> postData = {
-      "latitude": userLocation.latitude.toString(),
-      "longitude": userLocation.longitude.toString(),
-      "accuracy": userLocation.accuracy.toString(),
-      "messenger_id": messengerID,
-      "subscriber_id": widget.delivery.subscriberID,
-    };
-
-    Future.delayed(Duration(milliseconds: 1000), () {
-      dio.post(AppUrls.updateLocationURL, data: postData).then((response) {
-        Delivery deliveryUpdateObject = Delivery(
-          id: widget.delivery.id,
-          deliveryDate: widget.delivery.deliveryDate,
-          latitude: userLocation.latitude.toString(),
-          longitude: userLocation.longitude.toString(),
-          subscriberAddress: widget.delivery.subscriberAddress,
-          subscriberEmail: widget.delivery.subscriberEmail,
-          subscriberFname: widget.delivery.subscriberFname,
-          subscriberLname: widget.delivery.subscriberLname,
-          subscriberID: widget.delivery.subscriberID,
-          areaID: widget.delivery.areaID,
-          areaName: widget.delivery.areaName,
-          subAreaID: widget.delivery.subAreaID,
-          subAreaName: widget.delivery.subAreaName,
-          status: widget.delivery.status,
-        );
-
-        Provider.of<DeliveriesProvider>(context, listen: false).updateItem(
-            widget.hiveIndex,
-            deliveryUpdateObject); // Update yung status ng delivery sa hive
-
-        Navigator.pop(context);
-
-        BotToast.showSimpleNotification(
-          title: "Location Updated Successfully!",
-          subTitle: "You can now perform delivery for this subscriber.",
-          backgroundColor: Colors.green,
-        );
-      }).catchError((error) {
-        BotToast.showSimpleNotification(
-          title: "Error Occured!",
-          subTitle:
-              "Error occured, please contact system administrator or try again.",
-          backgroundColor: Colors.green,
-        );
-      });
-    });
-
-    return Future.value(true);
   }
 
   @override

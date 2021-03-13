@@ -23,11 +23,10 @@ import 'package:jnb_mobile/utilities/colors.dart';
 import 'package:jnb_mobile/delivery.dart';
 
 class DeliverPage extends StatefulWidget {
-  final Delivery delivery;
-  final int hiveIndex;
+  // final Delivery delivery;
+  // final int hiveIndex;
 
-  DeliverPage({Key key, @required this.delivery, @required this.hiveIndex})
-      : super(key: key);
+  DeliverPage({Key key}) : super(key: key);
 
   @override
   _DeliverPageState createState() => _DeliverPageState();
@@ -62,9 +61,11 @@ class _DeliverPageState extends State<DeliverPage> {
       messengerID = user.userID;
     });
 
-    isDelivered = checkIfDelivered();
+    DeliveriesProvider _initProvider =
+        Provider.of<DeliveriesProvider>(context, listen: false);
+    isDelivered = checkIfDelivered(_initProvider);
 
-    hasImage = checkIfDelivered();
+    hasImage = checkIfDelivered(_initProvider);
 
     dio = Dio();
 
@@ -85,8 +86,8 @@ class _DeliverPageState extends State<DeliverPage> {
     super.dispose();
   }
 
-  bool checkIfDelivered() {
-    if (widget.delivery.status == "IN-PROGRESS") {
+  bool checkIfDelivered(DeliveriesProvider deliveriesProvider) {
+    if (deliveriesProvider.selectedDelivery.status == "IN-PROGRESS") {
       return false;
     }
 
@@ -105,20 +106,23 @@ class _DeliverPageState extends State<DeliverPage> {
     );
 
     Delivery deliveryUpdateObject = Delivery(
-      id: widget.delivery.id,
+      id: deliveriesProvider.selectedDelivery.id,
       deliveryDate: null,
-      latitude: widget.delivery.latitude,
-      longitude: widget.delivery.longitude,
-      subscriberAddress: widget.delivery.subscriberAddress,
-      subscriberEmail: widget.delivery.subscriberEmail,
-      subscriberFname: widget.delivery.subscriberFname,
-      subscriberLname: widget.delivery.subscriberLname,
-      subscriberID: widget.delivery.subscriberID,
+      latitude: deliveriesProvider.selectedDelivery.latitude,
+      longitude: deliveriesProvider.selectedDelivery.longitude,
+      subscriberAddress: deliveriesProvider.selectedDelivery.subscriberAddress,
+      subscriberEmail: deliveriesProvider.selectedDelivery.subscriberEmail,
+      subscriberFname: deliveriesProvider.selectedDelivery.subscriberFname,
+      subscriberLname: deliveriesProvider.selectedDelivery.subscriberLname,
+      subscriberID: deliveriesProvider.selectedDelivery.subscriberID,
+      areaID: deliveriesProvider.selectedDelivery.areaID,
+      areaName: deliveriesProvider.selectedDelivery.areaName,
+      subAreaID: deliveriesProvider.selectedDelivery.subAreaID,
+      subAreaName: deliveriesProvider.selectedDelivery.subAreaName,
       status: "DELIVERING",
     );
 
-    Provider.of<DeliveriesProvider>(context, listen: false).updateItem(
-        widget.hiveIndex,
+    deliveriesProvider.updateItem(
         deliveryUpdateObject); // Update yung status ng delivery sa hive
 
     DateTime dateNow = new DateTime.now();
@@ -134,11 +138,11 @@ class _DeliverPageState extends State<DeliverPage> {
       BotToast.showSimpleNotification(
         title: "No Internet",
         subTitle: "Delivery will resend when internet is available.",
-        backgroundColor: Colors.blue[200],
+        backgroundColor: Colors.yellow[200],
       );
 
       failedDeliveryService.addFailedDelivery(
-        delivery: widget.delivery,
+        delivery: deliveriesProvider.selectedDelivery,
         messengerID: messengerID,
         dateMobileDelivery: dateNow,
         imagePath: _image.path,
@@ -155,9 +159,9 @@ class _DeliverPageState extends State<DeliverPage> {
     }
 
     FormData formData = new FormData.fromMap({
-      'delivery_id': widget.delivery.id,
+      'delivery_id': deliveriesProvider.selectedDelivery.id,
       'messenger_id': messengerID,
-      'subscriber_id': widget.delivery.subscriberID,
+      'subscriber_id': deliveriesProvider.selectedDelivery.subscriberID,
       'date_mobile_delivery': formattedDate.toString(),
       'latitude': userLocation.latitude.toString(),
       'longitude': userLocation.longitude.toString(),
@@ -171,20 +175,32 @@ class _DeliverPageState extends State<DeliverPage> {
     Future.delayed(Duration(milliseconds: 1000), () {
       dio.post(AppUrls.deliverURL, data: formData).then((response) {
         Delivery deliveryUpdateObject = Delivery(
-          id: widget.delivery.id,
+          id: deliveriesProvider.selectedDelivery.id,
           deliveryDate: null,
-          latitude: widget.delivery.latitude,
-          longitude: widget.delivery.longitude,
-          subscriberAddress: widget.delivery.subscriberAddress,
-          subscriberEmail: widget.delivery.subscriberEmail,
-          subscriberFname: widget.delivery.subscriberFname,
-          subscriberLname: widget.delivery.subscriberLname,
-          subscriberID: widget.delivery.subscriberID,
+          latitude: deliveriesProvider.selectedDelivery.latitude,
+          longitude: deliveriesProvider.selectedDelivery.longitude,
+          subscriberAddress:
+              deliveriesProvider.selectedDelivery.subscriberAddress,
+          subscriberEmail: deliveriesProvider.selectedDelivery.subscriberEmail,
+          subscriberFname: deliveriesProvider.selectedDelivery.subscriberFname,
+          subscriberLname: deliveriesProvider.selectedDelivery.subscriberLname,
+          subscriberID: deliveriesProvider.selectedDelivery.subscriberID,
+          areaID: deliveriesProvider.selectedDelivery.areaID,
+          areaName: deliveriesProvider.selectedDelivery.areaName,
+          subAreaID: deliveriesProvider.selectedDelivery.subAreaID,
+          subAreaName: deliveriesProvider.selectedDelivery.subAreaName,
           status: response.data['delivery']['status'],
         );
 
-        deliveriesProvider.updateItem(widget.hiveIndex,
+        deliveriesProvider.updateItem(
             deliveryUpdateObject); // Update yung status ng delivery sa hive
+
+        if (this.mounted) {
+          setState(() {
+            isDelivering = false;
+            isDelivered = true;
+          });
+        }
 
         BotToast.showSimpleNotification(
           title: "Delivered Successfully",
@@ -216,7 +232,7 @@ class _DeliverPageState extends State<DeliverPage> {
     });
   }
 
-  Widget imageWidget() {
+  Widget imageWidget(DeliveriesProvider deliveriesProvider) {
     if (isDelivered == true) {
       return Center(
         child: Container(
@@ -226,7 +242,7 @@ class _DeliverPageState extends State<DeliverPage> {
       );
     }
 
-    if (widget.delivery.coordinates == null) {
+    if (deliveriesProvider.selectedDelivery.coordinates == null) {
       return Center(
         child: Container(
           margin: EdgeInsets.only(top: 25, left: 25, right: 25, bottom: 75),
@@ -252,19 +268,22 @@ class _DeliverPageState extends State<DeliverPage> {
   }
 
   Widget setUpDeliverButton() {
-    if (isDelivered == false) {
-      return Icon(Icons.send);
-    } else if (isDelivering == true) {
+    if (isDelivering == true) {
       return CircularProgressIndicator(
         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
       );
     }
 
+    if (isDelivered == false) {
+      return Icon(Icons.send);
+    }
+
     return Icon(Icons.check, color: Colors.white);
   }
 
-  _goToLocationUpdaterPage() {
-    Navigator.of(context).push(_createRoute());
+  _goToLocationUpdaterPage(
+      BuildContext context, DeliveriesProvider deliveriesProvider) {
+    Navigator.of(context).push(_createRoute(context, deliveriesProvider));
   }
 
   // @override
@@ -273,11 +292,12 @@ class _DeliverPageState extends State<DeliverPage> {
   //   model.valueThatComesFromAProvider = Provider.of<MyDependency>(context);
   // }
 
-  Route _createRoute() {
+  Route _createRoute(
+      BuildContext context, DeliveriesProvider deliveriesProvider) {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => UpdatePage(
-        delivery: widget.delivery, // Ipasa ang data
-        hiveIndex: widget.hiveIndex,
+        delivery: deliveriesProvider.selectedDelivery, // Ipasa ang data
+        hiveIndex: deliveriesProvider.selectedDelivery.id,
       ),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         var begin = Offset(0.0, 1.0);
@@ -307,16 +327,18 @@ class _DeliverPageState extends State<DeliverPage> {
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          widget.delivery.coordinates == null
+          deliveriesProvider.selectedDelivery.coordinates == null
               ? FloatingActionButton(
                   child: Icon(Icons.edit),
-                  onPressed: _goToLocationUpdaterPage,
+                  onPressed: () =>
+                      _goToLocationUpdaterPage(context, deliveriesProvider),
                   tooltip: "Update subscriber's location",
                 )
               : SizedBox(),
           Container(
             margin: EdgeInsets.only(right: 10),
-            child: isDelivered == false && widget.delivery.coordinates != null
+            child: isDelivered == false &&
+                    deliveriesProvider.selectedDelivery.coordinates != null
                 ? FloatingActionButton(
                     child: Icon(Icons.camera_alt),
                     onPressed: getImage,
@@ -352,11 +374,17 @@ class _DeliverPageState extends State<DeliverPage> {
         child: Center(
           child: Column(
             children: [
-              SubscriberDetailComponent(delivery: widget.delivery),
+              Consumer<DeliveriesProvider>(
+                builder: (context, provider, _) {
+                  return SubscriberDetailComponent(
+                      delivery: provider.selectedDelivery);
+                },
+              ),
               MyLocationDetailComponent(
                 location: userLocation?.fullLocation?.toString(),
               ),
-              imageWidget(), // tinawag ang function na nag rereturn ng Widget()
+              imageWidget(
+                  deliveriesProvider), // tinawag ang function na nag rereturn ng Widget()
             ],
           ),
         ),

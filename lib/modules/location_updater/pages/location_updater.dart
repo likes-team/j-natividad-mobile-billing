@@ -66,12 +66,15 @@ class _LocationUpdaterPageState extends State<LocationUpdaterPage> {
         if (failedDeliveries.length > 0) {
           BotToast.showSimpleNotification(
               title:
-                  "Redelivering ${failedDeliveries.length} failed deliveries... ");
+                  "Redelivering ${failedDeliveries.length} failed deliveries... ",
+              backgroundColor: Colors.blue[200]);
           var result =
               await failedDeliveriesService.redeliverFailedDeliveries();
           return result;
         } else {
-          BotToast.showSimpleNotification(title: "No failed deliveries...");
+          BotToast.showSimpleNotification(
+              title: "No failed deliveries...",
+              backgroundColor: Colors.blue[200]);
         }
       }
     } on SocketException catch (_) {
