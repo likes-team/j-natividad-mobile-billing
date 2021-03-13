@@ -30,7 +30,7 @@ class AppBarComponent extends StatelessWidget implements PreferredSizeWidget {
   Widget sortDialogWidget(areas, subAreas, context) {
     return AlertDialog(
       actions: [
-        FlatButton(
+        TextButton(
           child: Text("OK"),
           onPressed: () => _confirmFilter(context),
         )

@@ -13,7 +13,6 @@ import 'modules/dashboard/pages/dashboard.dart' show DashboardPage;
 class Home extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return _HomeState();
   }
 }

@@ -107,7 +107,7 @@ class DeliveriesProvider with ChangeNotifier {
       notifyListeners();
       return;
     }
-    List<Delivery> searchedDeliveriesList = List<Delivery>();
+    List<Delivery> searchedDeliveriesList = [];
 
     _deliveriesList.forEach((item) {
       print(item.subscriberLname);

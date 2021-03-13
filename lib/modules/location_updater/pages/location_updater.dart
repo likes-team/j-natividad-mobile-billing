@@ -12,8 +12,6 @@ import 'package:flushbar/flushbar.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:jnb_mobile/modules/authentication/models/user.dart' show User;
 import 'package:jnb_mobile/utilities/shared_preference.dart';
-import 'package:jnb_mobile/modules/deliveries/pages/deliver_page.dart'
-    show DeliverPage;
 import 'package:jnb_mobile/modules/deliveries/providers/deliveries_provider.dart';
 import 'package:jnb_mobile/delivery.dart';
 

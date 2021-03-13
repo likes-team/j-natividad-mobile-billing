@@ -207,7 +207,15 @@ class _DeliverPageState extends State<DeliverPage> {
           subTitle: " Check dashboard for more details.",
           backgroundColor: Colors.green,
         );
+
+        Navigator.pop(context);
       }).catchError((error) {
+        if (this.mounted) {
+          setState(() {
+            isDelivering = false;
+          });
+        }
+
         BotToast.showSimpleNotification(
           title: "Deliver Failed",
           duration: Duration(seconds: 5),
@@ -338,7 +346,8 @@ class _DeliverPageState extends State<DeliverPage> {
           Container(
             margin: EdgeInsets.only(right: 10),
             child: isDelivered == false &&
-                    deliveriesProvider.selectedDelivery.coordinates != null
+                    deliveriesProvider.selectedDelivery.coordinates != null &&
+                    isDelivering == false
                 ? FloatingActionButton(
                     child: Icon(Icons.camera_alt),
                     onPressed: getImage,

@@ -28,8 +28,6 @@ class UpdatePage extends StatefulWidget {
 }
 
 class _UpdatePageState extends State<UpdatePage> {
-  File _image;
-
   UserLocation userLocation;
 
   int messengerID;

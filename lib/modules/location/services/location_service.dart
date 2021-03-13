@@ -3,7 +3,7 @@ import 'package:location/location.dart';
 import 'package:jnb_mobile/modules/location/models/user_location_model.dart';
 
 class LocationService {
-  UserLocation _currenLocation;
+  // UserLocation _currenLocation;
 
   Location location = Location();
 
@@ -28,16 +28,16 @@ class LocationService {
     });
   }
 
-  Future<UserLocation> getLocation() async {
-    try {
-      var userLocation = await location.getLocation();
-      _currenLocation = UserLocation(
-        latitude: userLocation.latitude,
-        longitude: userLocation.longitude,
-        accuracy: userLocation.accuracy,
-      );
-    } catch (e) {
-      print("Could not get the location: $e");
-    }
-  }
+  // Future<UserLocation> getLocation() async {
+  //   try {
+  //     var userLocation = await location.getLocation();
+  //     _currenLocation = UserLocation(
+  //       latitude: userLocation.latitude,
+  //       longitude: userLocation.longitude,
+  //       accuracy: userLocation.accuracy,
+  //     );
+  //   } catch (e) {
+  //     print("Could not get the location: $e");
+  //   }
+  // }
 }
