@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import '../../../utilities/shared_preference.dart' show UserPreferences;
+import 'package:jnb_mobile/modules/about/pages/about.dart';
 import '../../../utilities/colors.dart' show MyColors;
 
 class DrawerComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var logoutUser = () {
-      UserPreferences().removeUser();
-      Navigator.pushReplacementNamed(context, '/login');
-    };
+    // var logoutUser = () {
+    //   UserPreferences().removeUser();
+    //   Navigator.pushReplacementNamed(context, '/login');
+    // };
 
     return Drawer(
       child: Column(
@@ -35,8 +35,11 @@ class DrawerComponent extends StatelessWidget {
           Column(
             children: [
               ListTile(
-                title: Text('Log Out'),
-                onTap: logoutUser,
+                title: Text('About'),
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => AboutPage()));
+                },
               )
               // ListTile(
               //   title: Text('Notifications'),
