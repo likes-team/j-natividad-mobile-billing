@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jnb_mobile/modules/map/pages/map.dart';
 import 'package:jnb_mobile/modules/offline_manager/services/failed_deliveries.dart';
 import 'package:jnb_mobile/modules/profile/pages/profile.dart';
 import 'utilities/colors.dart' show MyColors;
@@ -25,6 +26,7 @@ class _HomeState extends State<Home> {
 
   final List<Widget> _pages = [
     DashboardPage(),
+    MapPage(),
     DeliveriesPage(),
     LocationUpdaterPage(),
     ProfilePage(),
@@ -59,6 +61,10 @@ class _HomeState extends State<Home> {
             label: 'Dashboard',
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.map),
+            label: 'Map',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.motorcycle),
             label: 'Deliveries',
           ),
@@ -86,15 +92,20 @@ class _HomeState extends State<Home> {
           break;
         case 1:
           {
-            _title = "Deliveries";
+            _title = "Map";
           }
           break;
         case 2:
           {
-            _title = "Location Updater";
+            _title = "Deliveries";
           }
           break;
         case 3:
+          {
+            _title = "Location Updater";
+          }
+          break;
+        case 4:
           {
             _title = "Profile";
           }
