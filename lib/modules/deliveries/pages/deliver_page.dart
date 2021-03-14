@@ -67,6 +67,8 @@ class _DeliverPageState extends State<DeliverPage> {
 
     hasImage = checkIfDelivered(_initProvider);
 
+    isDelivering = checkIfDelivering(_initProvider);
+
     dio = Dio();
 
     // dio.interceptors.add(
@@ -86,12 +88,20 @@ class _DeliverPageState extends State<DeliverPage> {
     super.dispose();
   }
 
-  bool checkIfDelivered(DeliveriesProvider deliveriesProvider) {
-    if (deliveriesProvider.selectedDelivery.status == "IN-PROGRESS") {
-      return false;
+  bool checkIfDelivering(DeliveriesProvider deliveriesProvider) {
+    if (deliveriesProvider.selectedDelivery.status == "DELIVERING") {
+      return true;
     }
 
-    return true;
+    return false;
+  }
+
+  bool checkIfDelivered(DeliveriesProvider deliveriesProvider) {
+    if (deliveriesProvider.selectedDelivery.status == "DELIVERED") {
+      return true;
+    }
+
+    return false;
   }
 
   Future deliver(
@@ -354,7 +364,7 @@ class _DeliverPageState extends State<DeliverPage> {
                   )
                 : SizedBox(),
           ),
-          hasImage != false
+          hasImage != false || isDelivering == true
               ? FloatingActionButton(
                   child: setUpDeliverButton(),
                   heroTag: "btnDeliver",
