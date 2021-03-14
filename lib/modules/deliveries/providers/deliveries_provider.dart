@@ -18,8 +18,8 @@ class DeliveriesProvider with ChangeNotifier {
 
   Delivery get selectedDelivery => _selectedDelivery;
 
-  selectDelivery(int id) async {
-    var box = await Hive.openBox<Delivery>(_deliveriesBoxName);
+  selectDelivery(int id) {
+    var box = Hive.box<Delivery>(_deliveriesBoxName);
 
     _selectedDelivery = box.get(id);
 
@@ -57,7 +57,7 @@ class DeliveriesProvider with ChangeNotifier {
     });
   }
 
-  refreshDeliveries({@required area, @required subArea}) async {
+  refreshDeliveries({@required String area, @required String subArea}) async {
     var box = await Hive.openBox<Delivery>(_deliveriesBoxName);
 
     var messenger = UserPreferences().getUser();
@@ -70,13 +70,11 @@ class DeliveriesProvider with ChangeNotifier {
       try {
         final response = await http.get(url);
 
-        if (response.statusCode != 200) {
-          return [];
+        if (response.statusCode == 200) {
+          await putData(json.decode(response.body)['deliveries']);
         }
-        await putData(json.decode(response.body)['deliveries']);
       } catch (SocketException) {
-        print("Delivery Provider: Socket error");
-        return [];
+        print("error");
       }
 
       if (area != "ALL") {
@@ -150,10 +148,24 @@ class DeliveriesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  updateItem(Delivery delivery) {
+  updateItem(Delivery delivery, String area, String subArea) {
     final box = Hive.box<Delivery>(_deliveriesBoxName);
 
     box.put(delivery.id, delivery);
+
+    if (area != "ALL") {
+      _deliveriesList =
+          box.values.where((delivery) => delivery.areaName == area).toList();
+
+      if (subArea != "ALL") {
+        _deliveriesList = _deliveriesList
+            .where((delivery) => delivery.subAreaName == subArea)
+            .toList();
+      }
+
+      notifyListeners();
+      return null;
+    }
 
     _deliveriesList = box.values.toList();
 

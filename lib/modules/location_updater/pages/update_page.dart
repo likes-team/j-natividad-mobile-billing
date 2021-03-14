@@ -5,6 +5,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dio/dio.dart';
+import 'package:jnb_mobile/modules/deliveries/providers/areas_provider.dart';
 import 'package:jnb_mobile/modules/deliveries/providers/deliveries_provider.dart';
 import 'package:jnb_mobile/modules/location_updater/components/myLocationDetailUpdaterComponent.dart';
 import 'package:jnb_mobile/modules/location_updater/components/subscriber_detail_updater_component.dart';
@@ -32,8 +33,6 @@ class _UpdatePageState extends State<UpdatePage> {
 
   int messengerID;
 
-  bool isDelivered;
-
   final picker = ImagePicker();
 
   Dio dio;
@@ -41,6 +40,8 @@ class _UpdatePageState extends State<UpdatePage> {
   final connectivity = Connectivity();
 
   final failedDeliveryService = FailedDeliveryService();
+
+  bool isUpdating;
 
   @override
   void initState() {
@@ -51,6 +52,8 @@ class _UpdatePageState extends State<UpdatePage> {
     });
 
     dio = Dio();
+
+    isUpdating = false;
   }
 
   @override
@@ -59,10 +62,20 @@ class _UpdatePageState extends State<UpdatePage> {
   }
 
   Future updateLocation() async {
+    setState(() {
+      isUpdating = true;
+    });
+
     BotToast.showSimpleNotification(
       title: "Updating Location, Please wait...",
       backgroundColor: Colors.blue[200],
     );
+
+    var selectedArea =
+        Provider.of<AreasProvider>(context, listen: false).selectedArea;
+
+    var selectedSubArea =
+        Provider.of<AreasProvider>(context, listen: false).selectedSubArea;
 
     Delivery deliveryUpdateObject = Delivery(
       id: widget.delivery.id,
@@ -82,7 +95,9 @@ class _UpdatePageState extends State<UpdatePage> {
     );
 
     Provider.of<DeliveriesProvider>(context, listen: false).updateItem(
-        deliveryUpdateObject); // Update yung status ng delivery sa hive
+        deliveryUpdateObject,
+        selectedArea,
+        selectedSubArea); // Update yung location ng subscriber sa hive
 
     Provider.of<DeliveriesProvider>(context, listen: false)
         .selectDelivery(widget.delivery.id);
@@ -117,6 +132,12 @@ class _UpdatePageState extends State<UpdatePage> {
           });
         });
 
+        if (this.mounted) {
+          setState(() {
+            isUpdating = false;
+          });
+        }
+
         return Future.value(true);
       }
     } on SocketException catch (_) {
@@ -125,10 +146,27 @@ class _UpdatePageState extends State<UpdatePage> {
         subTitle: "Updating with last identified location.",
         backgroundColor: Colors.yellow[200],
       );
+
+      if (this.mounted) {
+        setState(() {
+          isUpdating = false;
+        });
+      }
+
       Navigator.pop(context);
 
       return Future.value(false);
     }
+  }
+
+  Widget setUpUpdateButton() {
+    if (isUpdating == true) {
+      return CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+      );
+    }
+
+    return Icon(Icons.edit_location_sharp);
   }
 
   @override
@@ -143,9 +181,9 @@ class _UpdatePageState extends State<UpdatePage> {
               margin: EdgeInsets.only(right: 10),
               child: FloatingActionButton(
                 tooltip: "Update location",
-                child: Icon(Icons.edit_location_sharp),
+                child: setUpUpdateButton(),
                 // Provide an onPressed callback.
-                onPressed: updateLocation,
+                onPressed: isUpdating == false ? updateLocation : () => {},
               )),
         ],
       ),
