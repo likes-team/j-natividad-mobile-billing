@@ -41,7 +41,7 @@ class _AboutPageState extends State<AboutPage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
-          "About Page",
+          "About",
           style: TextStyle(
             color: MyColors.home,
             fontWeight: FontWeight.bold,
@@ -51,14 +51,15 @@ class _AboutPageState extends State<AboutPage> {
           color: MyColors.home,
         ),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          _infoTile('App name', _packageInfo.appName),
-          _infoTile('Package name', _packageInfo.packageName),
-          _infoTile('App version', _packageInfo.version),
-          _infoTile('Build number', _packageInfo.buildNumber),
-        ],
+      body: Center(
+        child: Column(
+          children: <Widget>[
+            _infoTile('App name', _packageInfo.appName),
+            _infoTile('Package name', _packageInfo.packageName),
+            _infoTile('App version', _packageInfo.version),
+            _infoTile('Build number', _packageInfo.buildNumber),
+          ],
+        ),
       ),
     );
   }
