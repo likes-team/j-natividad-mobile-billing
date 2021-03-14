@@ -20,7 +20,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   String _title;
-  int _currentPage = 1;
+  int _currentPage = 2;
 
   final failedDeliveriesService = FailedDeliveryService();
 
