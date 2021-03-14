@@ -40,8 +40,8 @@ class _MapPageState extends State<MapPage> {
           onMapCreated: _onMapCreated,
           onStyleLoadedCallback: () => addCircle(),
           initialCameraPosition: CameraPosition(
-            target: LatLng(14.5032211, 121.0622898),
-            zoom: 19,
+            target: LatLng(14.232940, 121.090019),
+            zoom: 10,
           )),
     );
   }
