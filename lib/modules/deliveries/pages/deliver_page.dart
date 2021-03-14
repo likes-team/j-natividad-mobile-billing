@@ -5,6 +5,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dio/dio.dart';
+import 'package:jnb_mobile/modules/deliveries/providers/areas_provider.dart';
 import 'package:jnb_mobile/modules/deliveries/providers/deliveries_provider.dart';
 import 'package:jnb_mobile/modules/location_updater/pages/update_page.dart';
 import 'package:jnb_mobile/modules/offline_manager/multipart_extended.dart';
@@ -114,6 +115,11 @@ class _DeliverPageState extends State<DeliverPage> {
       title: "Delivering, Please wait...",
       backgroundColor: Colors.blue[200],
     );
+    var selectedArea =
+        Provider.of<AreasProvider>(context, listen: false).selectedArea;
+
+    var selectedSubArea =
+        Provider.of<AreasProvider>(context, listen: false).selectedSubArea;
 
     Delivery deliveryUpdateObject = Delivery(
       id: deliveriesProvider.selectedDelivery.id,
@@ -132,8 +138,8 @@ class _DeliverPageState extends State<DeliverPage> {
       status: "DELIVERING",
     );
 
-    deliveriesProvider.updateItem(
-        deliveryUpdateObject); // Update yung status ng delivery sa hive
+    deliveriesProvider.updateItem(deliveryUpdateObject, selectedArea,
+        selectedSubArea); // Update yung status ng delivery sa hive
 
     DateTime dateNow = new DateTime.now();
     String formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(dateNow);
@@ -202,8 +208,8 @@ class _DeliverPageState extends State<DeliverPage> {
           status: response.data['delivery']['status'],
         );
 
-        deliveriesProvider.updateItem(
-            deliveryUpdateObject); // Update yung status ng delivery sa hive
+        deliveriesProvider.updateItem(deliveryUpdateObject, selectedArea,
+            selectedSubArea); // Update yung status ng delivery sa hive
 
         if (this.mounted) {
           setState(() {
