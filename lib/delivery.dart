@@ -8,7 +8,7 @@ class Delivery {
   final int id;
 
   @HiveField(1)
-  final String status;
+  String status;
 
   @HiveField(2)
   final int subscriberID;

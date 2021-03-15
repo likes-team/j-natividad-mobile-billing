@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:jnb_mobile/delivery.dart';
+import 'package:jnb_mobile/modules/offline_manager/services/failed_deliveries.dart';
+import 'package:jnb_mobile/sub_areas.dart';
 import 'package:jnb_mobile/utilities/shared_preference.dart';
 import 'package:jnb_mobile/utilities/urls.dart' show AppUrls;
 
@@ -17,6 +19,12 @@ class DeliveriesProvider with ChangeNotifier {
   Delivery _selectedDelivery;
 
   Delivery get selectedDelivery => _selectedDelivery;
+
+  List _deliveringList = <Delivery>[];
+
+  List<Delivery> get deliveringList => _deliveringList;
+
+  final FailedDeliveryService failedDeliveriesService = FailedDeliveryService();
 
   selectDelivery(int id) {
     var box = Hive.box<Delivery>(_deliveriesBoxName);
@@ -55,6 +63,16 @@ class DeliveriesProvider with ChangeNotifier {
 
       return Future.value(true);
     });
+  }
+
+  getDeliveringData() async {
+    var box = await Hive.openBox<Delivery>(_deliveriesBoxName);
+
+    _deliveringList = box.values
+        .where((delivery) => delivery.status == "DELIVERING")
+        .toList();
+
+    notifyListeners();
   }
 
   refreshDeliveries({@required String area, @required String subArea}) async {
@@ -97,9 +115,24 @@ class DeliveriesProvider with ChangeNotifier {
     });
   }
 
-  searchDeliveries(String searchValue) async {
+  searchDeliveries(String searchValue, String area, String subArea) async {
     if (searchValue.isEmpty) {
       var box = await Hive.openBox<Delivery>(_deliveriesBoxName);
+
+      if (area != "ALL") {
+        _deliveriesList =
+            box.values.where((delivery) => delivery.areaName == area).toList();
+
+        if (subArea != "ALL") {
+          _deliveriesList = _deliveriesList
+              .where((delivery) => delivery.subAreaName == subArea)
+              .toList();
+        }
+
+        notifyListeners();
+        return null;
+      }
+
       _deliveriesList = box.values.toList();
 
       notifyListeners();
@@ -127,7 +160,27 @@ class DeliveriesProvider with ChangeNotifier {
     var deliveries =
         List<Delivery>.from(jsonList.map((model) => Delivery.fromJson(model)));
 
+    List<int> failedDeliveriesIds =
+        await failedDeliveriesService.getFailedDeliveriesIds();
+
+    // TODO: gumawa nalang isang button na may count of failed deliveries
+    if (failedDeliveriesIds.length == 0) {
+      for (var delivery in deliveries) {
+        box.put(delivery.id, delivery);
+      }
+
+      return;
+    }
+
     for (var delivery in deliveries) {
+      if (failedDeliveriesIds.contains(delivery.id) &&
+          delivery.status == "IN-PROGRESS") {
+        delivery.status = "DELIVERING";
+        box.put(delivery.id, delivery);
+
+        continue;
+      }
+
       box.put(delivery.id, delivery);
     }
   }

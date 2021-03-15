@@ -46,6 +46,23 @@ class FailedDeliveryService {
     return box.values.toList();
   }
 
+  Future<List<int>> getFailedDeliveriesIds() async {
+    box = await Hive.openBox<FailedDelivery>(_boxName);
+    List<int> result = [];
+
+    List<FailedDelivery> boxList = box.values.toList();
+
+    if (boxList.length == 0) {
+      return [];
+    }
+
+    for (var i = 0; i < boxList.length; i++) {
+      result.add(boxList[i].id);
+    }
+
+    return result;
+  }
+
   Future<bool> redeliverFailedDeliveries() async {
     box = await Hive.openBox<FailedDelivery>(_boxName);
 
@@ -74,6 +91,9 @@ class FailedDeliveryService {
       });
 
       Future.delayed(Duration(milliseconds: 1000), () async {
+        // BotToast.showSimpleNotification(
+        //     title: "Delivering ",
+        //     backgroundColor: Colors.blue[200]);
         await dio.post(AppUrls.deliverURL, data: formData).then((response) {
           _successCounter += 1;
 
@@ -83,6 +103,7 @@ class FailedDeliveryService {
               title: "$_successCounter deliveries, Delivered Succesfully!",
               backgroundColor: Colors.green);
         }).catchError((error) {
+          // addFailedDelivery(delivery: ); TODO
           _errorCounter += 1;
           BotToast.showSimpleNotification(
               title: "$_errorCounter deliveries, Failed to redeliver!",
