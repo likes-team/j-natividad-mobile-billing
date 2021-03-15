@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jnb_mobile/areas.dart';
+import 'package:jnb_mobile/modules/deliveries/pages/delivering_page.dart';
 import 'package:jnb_mobile/modules/deliveries/providers/areas_provider.dart';
 import 'package:jnb_mobile/modules/deliveries/providers/deliveries_provider.dart';
 import 'package:jnb_mobile/sub_areas.dart';
@@ -92,6 +93,11 @@ class AppBarComponent extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
+  _gotoDeliveringPage(BuildContext context) {
+    Navigator.push(
+        (context), MaterialPageRoute(builder: (context) => DeliveringPage()));
+  }
+
   @override
   Widget build(BuildContext context) {
     var areas = Provider.of<AreasProvider>(context).areaList;
@@ -121,13 +127,23 @@ class AppBarComponent extends StatelessWidget implements PreferredSizeWidget {
           Padding(
             padding: EdgeInsets.only(right: 20.0),
             child: GestureDetector(
-              onTap: _showSortDialog,
+              onTap: () => _gotoDeliveringPage(context),
               child: Icon(
-                Icons.sort,
+                Icons.schedule_send,
                 size: 26.0,
               ),
             ),
           ),
+        Padding(
+          padding: EdgeInsets.only(right: 20.0),
+          child: GestureDetector(
+            onTap: _showSortDialog,
+            child: Icon(
+              Icons.sort,
+              size: 26.0,
+            ),
+          ),
+        ),
       ],
     );
   }

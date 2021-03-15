@@ -113,8 +113,14 @@ class _LocationUpdaterPageState extends State<LocationUpdaterPage> {
   }
 
   void filterSearchResults(String query) {
+    var selectedArea =
+        Provider.of<AreasProvider>(context, listen: false).selectedArea;
+
+    var selectedSubArea =
+        Provider.of<AreasProvider>(context, listen: false).selectedSubArea;
+
     Provider.of<DeliveriesProvider>(context, listen: false)
-        .searchDeliveries(query.toUpperCase());
+        .searchDeliveries(query.toUpperCase(), selectedArea, selectedSubArea);
   }
 
   @override

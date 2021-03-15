@@ -56,7 +56,7 @@ class _DeliveriesPageState extends State {
 
     Provider.of<AreasProvider>(context, listen: false).getAreas();
 
-    sendFailedDeliveries();
+    // sendFailedDeliveries();
   }
 
   sendFailedDeliveries() async {
@@ -96,19 +96,16 @@ class _DeliveriesPageState extends State {
     var selectedSubArea =
         Provider.of<AreasProvider>(context, listen: false).selectedSubArea;
 
-    var result = await sendFailedDeliveries();
     try {
       final networkResult = await InternetAddress.lookup('google.com');
       if (networkResult.isNotEmpty && networkResult[0].rawAddress.isNotEmpty) {
-        if (result) {
-          Provider.of<DeliveriesProvider>(context, listen: false)
-              .refreshDeliveries(area: selectedArea, subArea: selectedSubArea);
-          Flushbar(
-            title: "Refreshed Successfully!",
-            message: "Success to update deliveries",
-            duration: Duration(seconds: 3),
-          ).show(context);
-        }
+        Provider.of<DeliveriesProvider>(context, listen: false)
+            .refreshDeliveries(area: selectedArea, subArea: selectedSubArea);
+        Flushbar(
+          title: "Refreshed Successfully!",
+          message: "Success to update deliveries",
+          duration: Duration(seconds: 3),
+        ).show(context);
       }
     } on SocketException catch (_) {
       Flushbar(
@@ -117,11 +114,18 @@ class _DeliveriesPageState extends State {
         duration: Duration(seconds: 3),
       ).show(context);
     }
+    isLoading = false;
   }
 
   void filterSearchResults(String query) {
+    var selectedArea =
+        Provider.of<AreasProvider>(context, listen: false).selectedArea;
+
+    var selectedSubArea =
+        Provider.of<AreasProvider>(context, listen: false).selectedSubArea;
+
     Provider.of<DeliveriesProvider>(context, listen: false)
-        .searchDeliveries(query.toUpperCase());
+        .searchDeliveries(query.toUpperCase(), selectedArea, selectedSubArea);
   }
 
   @override
