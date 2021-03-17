@@ -216,6 +216,8 @@ class _DeliverPageState extends State<DeliverPage> {
             isDelivering = false;
             isDelivered = true;
           });
+          
+          Navigator.pop(context);
         }
 
         BotToast.showSimpleNotification(
@@ -224,7 +226,7 @@ class _DeliverPageState extends State<DeliverPage> {
           backgroundColor: Colors.green,
         );
 
-        Navigator.pop(context);
+        
       }).catchError((error) {
         if (this.mounted) {
           setState(() {
