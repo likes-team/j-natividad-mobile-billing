@@ -15,7 +15,7 @@ class FailedDeliveryService {
 
   addFailedDelivery({
     Delivery delivery,
-    int messengerID,
+    String messengerID,
     DateTime dateMobileDelivery,
     String imagePath,
     String latitude,
@@ -46,9 +46,9 @@ class FailedDeliveryService {
     return box.values.toList();
   }
 
-  Future<List<int>> getFailedDeliveriesIds() async {
+  Future<List<String>> getFailedDeliveriesIds() async {
     box = await Hive.openBox<FailedDelivery>(_boxName);
-    List<int> result = [];
+    List<String> result = [];
 
     List<FailedDelivery> boxList = box.values.toList();
 

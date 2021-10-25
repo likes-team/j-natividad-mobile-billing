@@ -5,7 +5,7 @@ part 'sub_areas.g.dart';
 @HiveType(typeId: 3)
 class SubArea {
   @HiveField(0)
-  final int subAreaID;
+  final String subAreaID;
 
   @HiveField(1)
   final String subAreaName;

@@ -1,5 +1,5 @@
 class User {
-  int userID;
+  String userID;
   String username;
   String fname;
   String lname;

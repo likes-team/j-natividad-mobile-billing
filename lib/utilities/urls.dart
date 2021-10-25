@@ -1,5 +1,5 @@
 class AppUrls {
-  static const String serverURL = "http://jnatividadbilling.pythonanywhere.com";
+  static const String serverURL = "http://13.212.16.21";
 
   static const String loginURL = serverURL + "/auth/api/users/login";
 

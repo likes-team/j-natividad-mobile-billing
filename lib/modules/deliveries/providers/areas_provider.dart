@@ -38,7 +38,7 @@ class AreasProvider with ChangeNotifier {
   }
 
   List<SubArea> _subAreasList = [
-    SubArea(subAreaID: 0, subAreaName: "ALL", subAreaDescription: "ALL")
+    SubArea(subAreaID: '', subAreaName: "ALL", subAreaDescription: "ALL")
   ];
 
   List<SubArea> get subAreasList => _subAreasList;
@@ -53,13 +53,13 @@ class AreasProvider with ChangeNotifier {
       selectedSubArea = "ALL";
 
       _subAreasList.insert(0,
-          SubArea(subAreaID: 0, subAreaName: "ALL", subAreaDescription: "ALL"));
+          SubArea(subAreaID: '', subAreaName: "ALL", subAreaDescription: "ALL"));
       return;
     }
 
     _subAreasList = List<SubArea>.from(_areasList[selectedAreaIndex].subAreas);
     _subAreasList.insert(0,
-        SubArea(subAreaID: 0, subAreaName: "ALL", subAreaDescription: "ALL"));
+        SubArea(subAreaID: '', subAreaName: "ALL", subAreaDescription: "ALL"));
 
     selectedSubArea = "ALL";
 
@@ -119,7 +119,7 @@ class AreasProvider with ChangeNotifier {
     areas.insert(
         0,
         Area(
-          areaID: 0,
+          areaID: '',
           areaName: "ALL",
           areaDescription: "ALL",
         ));

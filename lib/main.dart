@@ -7,6 +7,7 @@ import 'package:jnb_mobile/delivery.dart';
 import 'package:jnb_mobile/failed_delivery.dart';
 import 'package:jnb_mobile/modules/authentication/pages/login.dart';
 import 'package:jnb_mobile/modules/authentication/providers/user.dart';
+import 'package:jnb_mobile/modules/dashboard/providers/dashboard_provider.dart';
 import 'package:jnb_mobile/modules/deliveries/providers/areas_provider.dart';
 import 'package:jnb_mobile/modules/deliveries/providers/deliveries_provider.dart';
 import 'package:jnb_mobile/modules/location/models/user_location_model.dart';
@@ -50,6 +51,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => AreasProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => DashboardProvider(),
         ),
         StreamProvider<UserLocation>(
           create: (context) => LocationService().locationStream,

@@ -17,9 +17,9 @@ class DeliveryAdapter extends TypeAdapter<Delivery> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Delivery(
-      id: fields[0] as int,
+      id: fields[0] as String,
       status: fields[1] as String,
-      subscriberID: fields[2] as int,
+      subscriberID: fields[2] as String,
       subscriberFname: fields[3] as String,
       subscriberLname: fields[4] as String,
       subscriberAddress: fields[5] as String,
@@ -27,9 +27,9 @@ class DeliveryAdapter extends TypeAdapter<Delivery> {
       deliveryDate: fields[7] as String,
       latitude: fields[9] as String,
       longitude: fields[8] as String,
-      areaID: fields[10] as int,
+      areaID: fields[10] as String,
       areaName: fields[11] as String,
-      subAreaID: fields[12] as int,
+      subAreaID: fields[12] as String,
       subAreaName: fields[13] as String,
     );
   }

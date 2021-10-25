@@ -38,7 +38,7 @@ class _DeliverPageState extends State<DeliverPage> {
 
   UserLocation userLocation;
 
-  int messengerID;
+  String messengerID;
 
   bool isDelivered; // Pag status ay delivered na
 
@@ -320,10 +320,10 @@ class _DeliverPageState extends State<DeliverPage> {
 
   Route _createRoute(
       BuildContext context, DeliveriesProvider deliveriesProvider) {
+
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => UpdatePage(
         delivery: deliveriesProvider.selectedDelivery, // Ipasa ang data
-        hiveIndex: deliveriesProvider.selectedDelivery.id,
       ),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         var begin = Offset(0.0, 1.0);

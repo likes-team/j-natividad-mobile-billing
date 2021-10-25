@@ -19,9 +19,8 @@ import 'package:jnb_mobile/delivery.dart';
 
 class UpdatePage extends StatefulWidget {
   final Delivery delivery;
-  final int hiveIndex;
 
-  UpdatePage({Key key, @required this.delivery, @required this.hiveIndex})
+  UpdatePage({Key key, @required this.delivery})
       : super(key: key);
 
   @override
@@ -31,7 +30,7 @@ class UpdatePage extends StatefulWidget {
 class _UpdatePageState extends State<UpdatePage> {
   UserLocation userLocation;
 
-  int messengerID;
+  String messengerID;
 
   final picker = ImagePicker();
 

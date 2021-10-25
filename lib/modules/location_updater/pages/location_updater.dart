@@ -48,7 +48,7 @@ class _LocationUpdaterPageState extends State<LocationUpdaterPage> {
         .then((value) {
       isLoading = false;
     }).catchError((error) {
-      print(error);
+      print(error.toString());
     });
 
     Provider.of<AreasProvider>(context, listen: false).getAreas();
@@ -214,7 +214,6 @@ class _LocationUpdaterPageState extends State<LocationUpdaterPage> {
                                                 delivery: provider
                                                         .deliveriesList[
                                                     index], // Ipasa ang data
-                                                hiveIndex: index,
                                               ),
                                             ),
                                           );

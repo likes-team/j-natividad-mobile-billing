@@ -6,7 +6,7 @@ class UserPreferences {
   void saveUser(User user) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    prefs.setInt('userID', user.userID);
+    prefs.setString('userID', user.userID);
     prefs.setString('username', user.username);
     prefs.setString('fname', user.fname);
     prefs.setString('lname', user.lname);
@@ -17,7 +17,7 @@ class UserPreferences {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     return User(
-      userID: prefs.getInt('userID'),
+      userID: prefs.getString('userID'),
       username: prefs.getString('username'),
       fname: prefs.getString('fname'),
       lname: prefs.getString('name'),

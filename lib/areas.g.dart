@@ -17,7 +17,7 @@ class AreaAdapter extends TypeAdapter<Area> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Area(
-      areaID: fields[0] as int,
+      areaID: fields[0] as String,
       areaName: fields[1] as String,
       areaDescription: fields[2] as String,
       subAreas: (fields[3] as List)?.cast<SubArea>(),

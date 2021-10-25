@@ -5,13 +5,13 @@ part 'delivery.g.dart';
 @HiveType(typeId: 0)
 class Delivery {
   @HiveField(0)
-  final int id;
+  final String id;
 
   @HiveField(1)
   String status;
 
   @HiveField(2)
-  final int subscriberID;
+  final String subscriberID;
 
   @HiveField(3)
   final String subscriberFname;
@@ -35,13 +35,13 @@ class Delivery {
   final String latitude;
 
   @HiveField(10)
-  final int areaID;
+  final String areaID;
 
   @HiveField(11)
   final String areaName;
 
   @HiveField(12)
-  final int subAreaID;
+  final String subAreaID;
 
   @HiveField(13)
   final String subAreaName;

@@ -17,7 +17,7 @@ class SubAreaAdapter extends TypeAdapter<SubArea> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return SubArea(
-      subAreaID: fields[0] as int,
+      subAreaID: fields[0] as String,
       subAreaName: fields[1] as String,
       subAreaDescription: fields[2] as String,
     );

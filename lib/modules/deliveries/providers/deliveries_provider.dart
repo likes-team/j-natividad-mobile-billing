@@ -5,7 +5,6 @@ import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:jnb_mobile/delivery.dart';
 import 'package:jnb_mobile/modules/offline_manager/services/failed_deliveries.dart';
-import 'package:jnb_mobile/sub_areas.dart';
 import 'package:jnb_mobile/utilities/shared_preference.dart';
 import 'package:jnb_mobile/utilities/urls.dart' show AppUrls;
 
@@ -26,7 +25,7 @@ class DeliveriesProvider with ChangeNotifier {
 
   final FailedDeliveryService failedDeliveriesService = FailedDeliveryService();
 
-  selectDelivery(int id) {
+  selectDelivery(String id) {
     var box = Hive.box<Delivery>(_deliveriesBoxName);
 
     _selectedDelivery = box.get(id);
@@ -42,7 +41,7 @@ class DeliveriesProvider with ChangeNotifier {
     return messenger.then((user) async {
       String url = AppUrls.deliveriesURL +
           "?query=by_messenger&messenger_id=" +
-          user.userID.toString();
+          user.userID;
 
       try {
         final response = await http.get(url);
@@ -92,7 +91,7 @@ class DeliveriesProvider with ChangeNotifier {
           await putData(json.decode(response.body)['deliveries']);
         }
       } catch (SocketException) {
-        print("error");
+        print("Error Occured: Socket Exception");
       }
 
       if (area != "ALL") {
@@ -160,7 +159,7 @@ class DeliveriesProvider with ChangeNotifier {
     var deliveries =
         List<Delivery>.from(jsonList.map((model) => Delivery.fromJson(model)));
 
-    List<int> failedDeliveriesIds =
+    List<String> failedDeliveriesIds =
         await failedDeliveriesService.getFailedDeliveriesIds();
 
     // TODO: gumawa nalang isang button na may count of failed deliveries

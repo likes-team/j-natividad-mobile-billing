@@ -5,13 +5,13 @@ part 'failed_delivery.g.dart';
 @HiveType(typeId: 1)
 class FailedDelivery {
   @HiveField(0)
-  final int id;
+  final String id;
 
   @HiveField(1)
-  final int messengerID;
+  final String messengerID;
 
   @HiveField(2)
-  final int subscriberID;
+  final String subscriberID;
 
   @HiveField(3)
   final DateTime dateMobileDelivery;

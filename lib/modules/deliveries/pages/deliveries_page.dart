@@ -51,7 +51,7 @@ class _DeliveriesPageState extends State {
         .then((value) {
       isLoading = false;
     }).catchError((error) {
-      print(error);
+      print(error.toString());
     });
 
     Provider.of<AreasProvider>(context, listen: false).getAreas();

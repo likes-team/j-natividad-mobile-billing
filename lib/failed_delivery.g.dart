@@ -17,9 +17,9 @@ class FailedDeliveryAdapter extends TypeAdapter<FailedDelivery> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return FailedDelivery(
-      id: fields[0] as int,
-      messengerID: fields[1] as int,
-      subscriberID: fields[2] as int,
+      id: fields[0] as String,
+      messengerID: fields[1] as String,
+      subscriberID: fields[2] as String,
       dateMobileDelivery: fields[3] as DateTime,
       latitude: fields[4] as String,
       longitude: fields[5] as String,
