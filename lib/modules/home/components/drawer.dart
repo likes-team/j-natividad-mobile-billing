@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jnb_mobile/modules/about/pages/about.dart';
-import '../../../utilities/colors.dart' show MyColors;
+import '../../../utilities/colors.dart' show AppColors;
 
 class DrawerComponent extends StatelessWidget {
   @override
@@ -15,7 +15,7 @@ class DrawerComponent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           AppBar(
-            iconTheme: IconThemeData(color: MyColors.home),
+            iconTheme: IconThemeData(color: AppColors.home),
             backgroundColor: Colors.white,
             leading: IconButton(
               icon: Icon(Icons.navigate_before),
@@ -26,7 +26,7 @@ class DrawerComponent extends StatelessWidget {
             title: Text(
               "Menu",
               style: TextStyle(
-                color: MyColors.home,
+                color: AppColors.home,
                 fontWeight: FontWeight.bold,
                 fontSize: 25,
               ),

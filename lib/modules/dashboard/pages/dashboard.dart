@@ -50,38 +50,38 @@ class _DashboardPageState extends State<DashboardPage> {
                       const SizedBox(
                         height: 18,
                       ),
-                      Expanded(
-                        child: AspectRatio(
-                          aspectRatio: 1,
-                          child: Consumer<DashboardProvider>(
-                              builder: (context, provider, child) {
-                            return PieChart(
-                              PieChartData(
-                                  pieTouchData: PieTouchData(
-                                      touchCallback: (pieTouchResponse) {
-                                    setState(() {
-                                      if (pieTouchResponse.touchInput
-                                              is FlLongPressEnd ||
-                                          pieTouchResponse.touchInput
-                                              is FlPanEnd) {
-                                        touchedIndex = -1;
-                                      } else {
-                                        touchedIndex = pieTouchResponse
-                                            .touchedSectionIndex;
-                                      }
-                                    });
-                                  }),
-                                  borderData: FlBorderData(
-                                    show: false,
-                                  ),
-                                  sectionsSpace: 0,
-                                  centerSpaceRadius: 40,
-                                  sections: showingSections(
-                                      provider.deliveriesSummaryData)),
-                            );
-                          }),
-                        ),
-                      ),
+                      // Expanded(
+                      //   child: AspectRatio(
+                      //     aspectRatio: 1,
+                      //     child: Consumer<DashboardProvider>(
+                      //         builder: (context, provider, child) {
+                      //       return PieChart(
+                      //         PieChartData(
+                      //             pieTouchData: PieTouchData(
+                      //                 touchCallback: (pieTouchResponse) {
+                      //               setState(() {
+                      //                 if (pieTouchResponse.touchInput
+                      //                         is FlLongPressEnd ||
+                      //                     pieTouchResponse.touchInput
+                      //                         is FlPanEnd) {
+                      //                   touchedIndex = -1;
+                      //                 } else {
+                      //                   touchedIndex = pieTouchResponse
+                      //                       .touchedSectionIndex;
+                      //                 }
+                      //               });
+                      //             }),
+                      //             borderData: FlBorderData(
+                      //               show: false,
+                      //             ),
+                      //             sectionsSpace: 0,
+                      //             centerSpaceRadius: 40,
+                      //             sections: showingSections(
+                      //                 provider.deliveriesSummaryData)),
+                      //       );
+                      //     }),
+                      //   ),
+                      // ),
                       Column(
                         mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.end,

@@ -43,12 +43,12 @@ class _AboutPageState extends State<AboutPage> {
         title: Text(
           "About",
           style: TextStyle(
-            color: MyColors.home,
+            color: AppColors.home,
             fontWeight: FontWeight.bold,
           ),
         ),
         iconTheme: IconThemeData(
-          color: MyColors.home,
+          color: AppColors.home,
         ),
       ),
       body: Center(

@@ -46,8 +46,8 @@ class _UpdatePageState extends State<UpdatePage> {
   void initState() {
     super.initState();
 
-    UserPreferences().getUser().then((user) {
-      messengerID = user.userID;
+    UserPreferences.getUser().then((user) {
+      messengerID = user.id;
     });
 
     dio = Dio();
@@ -191,12 +191,12 @@ class _UpdatePageState extends State<UpdatePage> {
         title: Text(
           "Update Location",
           style: TextStyle(
-            color: MyColors.home,
+            color: AppColors.home,
             fontWeight: FontWeight.bold,
           ),
         ),
         iconTheme: IconThemeData(
-          color: MyColors.home,
+          color: AppColors.home,
         ),
       ),
       body: SingleChildScrollView(

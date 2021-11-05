@@ -69,10 +69,10 @@ class AreasProvider with ChangeNotifier {
   getAreas() async {
     var box = await Hive.openBox<Area>(_areasBoxName);
 
-    var messenger = UserPreferences().getUser();
+    var messenger = UserPreferences.getUser();
 
     return messenger.then((user) async {
-      String url = AppUrls.areasURL + user.userID.toString() + "/areas";
+      String url = AppUrls.areasURL + user.id.toString() + "/areas";
 
       try {
         final response = await http.get(url);

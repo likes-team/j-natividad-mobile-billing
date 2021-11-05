@@ -3,21 +3,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../modules/authentication/models/user.dart';
 
 class UserPreferences {
-  void saveUser(User user) async {
+  static void saveUser(User user) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    prefs.setString('userID', user.userID);
+    prefs.setString('userID', user.id);
     prefs.setString('username', user.username);
     prefs.setString('fname', user.fname);
     prefs.setString('lname', user.lname);
     prefs.setString('email', user.email);
   }
 
-  Future<User> getUser() async {
+  static Future<User> getUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     return User(
-      userID: prefs.getString('userID'),
+      id: prefs.getString('userID'),
       username: prefs.getString('username'),
       fname: prefs.getString('fname'),
       lname: prefs.getString('name'),
@@ -26,7 +26,7 @@ class UserPreferences {
     );
   }
 
-  void removeUser() async {
+  static  void removeUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     prefs.remove('UserID');

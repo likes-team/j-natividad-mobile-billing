@@ -36,12 +36,12 @@ class DeliveriesProvider with ChangeNotifier {
   Future<bool> getDeliveries() async {
     var box = await Hive.openBox<Delivery>(_deliveriesBoxName);
 
-    var messenger = UserPreferences().getUser();
+    var messenger = UserPreferences.getUser();
 
     return messenger.then((user) async {
       String url = AppUrls.deliveriesURL +
           "?query=by_messenger&messenger_id=" +
-          user.userID;
+          user.id;
 
       try {
         final response = await http.get(url);
@@ -77,12 +77,12 @@ class DeliveriesProvider with ChangeNotifier {
   refreshDeliveries({@required String area, @required String subArea}) async {
     var box = await Hive.openBox<Delivery>(_deliveriesBoxName);
 
-    var messenger = UserPreferences().getUser();
+    var messenger = UserPreferences.getUser();
 
     return messenger.then((user) async {
       String url = AppUrls.deliveriesURL +
           "?query=by_messenger&messenger_id=" +
-          user.userID.toString();
+          user.id.toString();
 
       try {
         final response = await http.get(url);

@@ -58,8 +58,8 @@ class _DeliverPageState extends State<DeliverPage> {
   void initState() {
     super.initState();
 
-    UserPreferences().getUser().then((user) {
-      messengerID = user.userID;
+    UserPreferences.getUser().then((user) {
+      messengerID = user.id;
     });
 
     DeliveriesProvider _initProvider =
@@ -389,12 +389,12 @@ class _DeliverPageState extends State<DeliverPage> {
         title: Text(
           "Delivery",
           style: TextStyle(
-            color: MyColors.home,
+            color: AppColors.home,
             fontWeight: FontWeight.bold,
           ),
         ),
         iconTheme: IconThemeData(
-          color: MyColors.home,
+          color: AppColors.home,
         ),
       ),
       body: SingleChildScrollView(

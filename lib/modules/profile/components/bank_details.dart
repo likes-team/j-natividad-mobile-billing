@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../utilities/colors.dart' show MyColors;
+import '../../../utilities/colors.dart' show AppColors;
 import './widgets/texts.dart' show MyTextGrayWidget;
 
 class BankDetailsComponent extends StatelessWidget {
@@ -34,7 +34,7 @@ class BankDetailsComponent extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: MyColors.home,
+                  color: AppColors.home,
                 ),
               ),
             ),

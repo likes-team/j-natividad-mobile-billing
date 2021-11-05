@@ -44,7 +44,7 @@ class _DeliveriesPageState extends State {
   void initState() {
     super.initState();
 
-    messenger = UserPreferences().getUser();
+    messenger = UserPreferences.getUser();
 
     Provider.of<DeliveriesProvider>(context, listen: false)
         .getDeliveries()

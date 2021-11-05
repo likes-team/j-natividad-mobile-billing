@@ -16,7 +16,7 @@ class ProfileTemplate extends StatelessWidget {
         ((MediaQuery.of(context).size.width / 2) + 85);
 
     var logoutUser = () {
-      UserPreferences().removeUser();
+      UserPreferences.removeUser();
       Navigator.pushReplacementNamed(context, '/login');
     };
     return Container(

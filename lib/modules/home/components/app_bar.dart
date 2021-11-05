@@ -5,7 +5,7 @@ import 'package:jnb_mobile/modules/deliveries/providers/areas_provider.dart';
 import 'package:jnb_mobile/modules/deliveries/providers/deliveries_provider.dart';
 import 'package:jnb_mobile/sub_areas.dart';
 import 'package:provider/provider.dart';
-import '../../../utilities/colors.dart' show MyColors;
+import '../../../utilities/colors.dart' show AppColors;
 
 class AppBarComponent extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -112,12 +112,12 @@ class AppBarComponent extends StatelessWidget implements PreferredSizeWidget {
     }
 
     return AppBar(
-      iconTheme: IconThemeData(color: MyColors.home),
+      iconTheme: IconThemeData(color: AppColors.home),
       backgroundColor: Colors.white,
       title: Text(
         title,
         style: TextStyle(
-          color: MyColors.home,
+          color: AppColors.home,
           fontWeight: FontWeight.bold,
           fontSize: 20,
         ),

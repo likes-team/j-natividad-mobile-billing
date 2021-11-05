@@ -40,7 +40,7 @@ class SubscriberDetailComponent extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: MyColors.home,
+                  color: AppColors.home,
                 ),
               ),
             ),

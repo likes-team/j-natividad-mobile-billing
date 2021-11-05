@@ -41,7 +41,7 @@ class _LocationUpdaterPageState extends State<LocationUpdaterPage> {
   void initState() {
     super.initState();
 
-    messenger = UserPreferences().getUser();
+    messenger = UserPreferences.getUser();
 
     Provider.of<DeliveriesProvider>(context, listen: false)
         .getDeliveries()

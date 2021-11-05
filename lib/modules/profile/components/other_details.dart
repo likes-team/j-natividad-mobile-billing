@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../utilities/colors.dart' show MyColors;
+import '../../../utilities/colors.dart' show AppColors;
 
 class OtherDetailsComponent extends StatelessWidget {
   final String _referralCodeSubtitle =
@@ -19,7 +19,7 @@ class OtherDetailsComponent extends StatelessWidget {
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: MyColors.home,
+                color: AppColors.home,
               ),
             ),
           ),
@@ -56,7 +56,7 @@ class OtherDetailsComponent extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 35,
                           fontWeight: FontWeight.bold,
-                          color: MyColors.home,
+                          color: AppColors.home,
                         ),
                       ),
                       Container(

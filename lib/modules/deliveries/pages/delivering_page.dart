@@ -51,12 +51,12 @@ class DeliveringPage extends StatelessWidget {
         title: Text(
           "Activity",
           style: TextStyle(
-            color: MyColors.home,
+            color: AppColors.home,
             fontWeight: FontWeight.bold,
           ),
         ),
         iconTheme: IconThemeData(
-          color: MyColors.home,
+          color: AppColors.home,
         ),
       ),
       floatingActionButton: FloatingActionButton(

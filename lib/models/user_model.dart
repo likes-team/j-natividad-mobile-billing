@@ -1,15 +1,13 @@
-import 'package:equatable/equatable.dart';
+class User {
+  String userID;
+  String username;
+  String fname;
+  String lname;
+  String email;
+  String phone;
 
-class User extends Equatable {
-  final String id;
-  final String username;
-  final String fname;
-  final String lname;
-  final String email;
-  final String phone;
-
-  const User({
-    this.id,
+  User({
+    this.userID,
     this.username,
     this.fname,
     this.lname,
@@ -17,11 +15,9 @@ class User extends Equatable {
     this.phone,
   });
 
-  static const empty = User();
-
   factory User.fromJson(Map<String, dynamic> responseData) {
     return User(
-      id: responseData['id'],
+      userID: responseData['id'],
       username: responseData['username'],
       fname: responseData['fname'],
       lname: responseData['lname'],
@@ -29,7 +25,4 @@ class User extends Equatable {
       phone: responseData['phone'],
     );
   }
-  
-  @override
-  List<Object> get props => [id];
 }

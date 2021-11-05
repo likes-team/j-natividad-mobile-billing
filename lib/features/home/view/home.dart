@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:jnb_mobile/modules/map/pages/map.dart';
 import 'package:jnb_mobile/modules/offline_manager/services/failed_deliveries.dart';
 import 'package:jnb_mobile/modules/profile/pages/profile.dart';
-import 'utilities/colors.dart' show MyColors;
-import 'modules/home/components/app_bar.dart' show AppBarComponent;
-import 'modules/home/components/drawer.dart' show DrawerComponent;
-import 'modules/deliveries/pages/deliveries_page.dart' show DeliveriesPage;
-import 'modules/location_updater/pages/location_updater.dart'
+import '../../../utilities/colors.dart' show AppColors;
+import '../../../modules/home/components/app_bar.dart' show AppBarComponent;
+import '../../../modules/home/components/drawer.dart' show DrawerComponent;
+import '../../../modules/deliveries/pages/deliveries_page.dart' show DeliveriesPage;
+import '../../../modules/location_updater/pages/location_updater.dart'
     show LocationUpdaterPage;
-import 'modules/dashboard/pages/dashboard.dart' show DashboardPage;
+import '../../../modules/dashboard/pages/dashboard.dart' show DashboardPage;
 // import 'modules/profile/pages/profile.dart' show ProfilePage;
 
 class Home extends StatefulWidget {
@@ -50,7 +50,7 @@ class _HomeState extends State<Home> {
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTabTapped,
         currentIndex: _currentPage,
-        selectedItemColor: MyColors.home,
+        selectedItemColor: AppColors.home,
         unselectedItemColor: Colors.grey[500],
         showUnselectedLabels: true,
         items: [

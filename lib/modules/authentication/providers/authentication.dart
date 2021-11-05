@@ -45,7 +45,7 @@ class AuthProvider with ChangeNotifier {
 
     User authUser = User.fromJson(userData);
 
-    UserPreferences().saveUser(authUser);
+    UserPreferences.saveUser(authUser);
 
     _loggedInStatus = Status.LoggedIn;
 
@@ -56,7 +56,7 @@ class AuthProvider with ChangeNotifier {
 
   logout() async {
     _loggedInStatus = Status.LoggedOut;
-    UserPreferences().removeUser();
+    UserPreferences.removeUser();
     notifyListeners();
   }
 }
