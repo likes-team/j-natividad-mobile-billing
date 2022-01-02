@@ -34,10 +34,8 @@ class _LoginPageState extends State<LoginPage> {
       listener: (context, state) {
         switch(state.status){
           case LoginStatus.loading:
-            // TODO: Handle this case.
             break;
           case LoginStatus.success:
-    
             break;
           case LoginStatus.error:
             showTopSnackBar(

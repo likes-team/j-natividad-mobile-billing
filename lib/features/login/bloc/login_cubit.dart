@@ -1,18 +1,18 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:jnb_mobile/modules/authentication/models/user.dart';
-import 'package:jnb_mobile/repositories/user_repository.dart';
+import 'package:jnb_mobile/features/authentication/bloc/authentication_bloc.dart';
+import 'package:jnb_mobile/models/user_model.dart';
+import 'package:jnb_mobile/repositories/authentication_repository.dart';
 import 'package:jnb_mobile/utilities/shared_preference.dart';
 import 'package:meta/meta.dart';
 
 part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
-  final UserRepository _userRepository;
-  final UserPreferences _userPreferences = UserPreferences();
+  final AuthenticationRepository _authenticationRepository;
 
-  LoginCubit({UserRepository userRepository}) :
-    _userRepository = userRepository,
+  LoginCubit({@required AuthenticationRepository authenticationRepository}) :
+    _authenticationRepository = authenticationRepository,
     super(LoginState());
 
   Future<void> login({@required String username, @required String password}) async{
@@ -23,11 +23,10 @@ class LoginCubit extends Cubit<LoginState> {
     }
 
     try{
-      await _userRepository.login(username, password);
-
-      
+      await _authenticationRepository.login(username, password);
+      emit(state.copyWith(status: LoginStatus.success, statusMessage: "Success"));
     } catch(err){
-      emit(state.copyWith(status: LoginStatus.error));
+      emit(state.copyWith(status: LoginStatus.error, statusMessage: err.toString()));
     }
   }
 }

@@ -1,6 +1,6 @@
 import 'dart:async';
+import 'package:jnb_mobile/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../modules/authentication/models/user.dart';
 
 class UserPreferences {
   static void saveUser(User user) async {
@@ -29,7 +29,7 @@ class UserPreferences {
   static  void removeUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    prefs.remove('UserID');
+    prefs.remove('userID');
     prefs.remove('username');
     prefs.remove('fname');
     prefs.remove('lname');

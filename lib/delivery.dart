@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:jnb_mobile/models/user_location_model.dart';
 
 part 'delivery.g.dart';
 
@@ -46,6 +47,9 @@ class Delivery {
   @HiveField(13)
   final String subAreaName;
 
+  @HiveField(14)
+  final String imagePath;
+
   Delivery({
     this.id,
     this.status,
@@ -61,6 +65,7 @@ class Delivery {
     this.areaName,
     this.subAreaID,
     this.subAreaName,
+    this.imagePath
   });
 
   factory Delivery.fromJson(json) {
@@ -80,9 +85,50 @@ class Delivery {
         areaName: json['area_name'],
         subAreaID: json['sub_area_id'],
         subAreaName: json['sub_area_name'],
+        imagePath: json['image_path']
       );
     }
     return null;
+  }
+
+  factory Delivery.updateStatusAndImage({Delivery delivery, String newStatus, String newImagePath}){
+    return Delivery(
+      id: delivery.id,
+      status: newStatus,
+      subscriberID: delivery.subscriberID,
+      subscriberFname: delivery.subscriberFname,
+      subscriberLname: delivery.subscriberLname,
+      subscriberAddress: delivery.subscriberAddress,
+      subscriberEmail: delivery.subscriberEmail,
+      deliveryDate: delivery.deliveryDate,
+      latitude: delivery.latitude,
+      longitude: delivery.longitude,
+      areaID: delivery.areaID,
+      areaName: delivery.areaName,
+      subAreaID: delivery.subAreaID,
+      subAreaName: delivery.subAreaName,
+      imagePath: newImagePath ?? delivery.imagePath
+    );
+  }
+
+  factory Delivery.updateSubscriberLocation({Delivery delivery, UserLocation userLocation}){
+    return Delivery(
+      id: delivery.id,
+      status: delivery.status,
+      subscriberID: delivery.subscriberID,
+      subscriberFname: delivery.subscriberFname,
+      subscriberLname: delivery.subscriberLname,
+      subscriberAddress: delivery.subscriberAddress,
+      subscriberEmail: delivery.subscriberEmail,
+      deliveryDate: delivery.deliveryDate,
+      latitude: userLocation.latitude.toString(),
+      longitude: userLocation.longitude.toString(),
+      areaID: delivery.areaID,
+      areaName: delivery.areaName,
+      subAreaID: delivery.subAreaID,
+      subAreaName: delivery.subAreaName,
+      imagePath: delivery.imagePath
+    );
   }
 
   String get fullName {

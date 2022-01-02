@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:jnb_mobile/modules/authentication/models/user.dart';
+import 'package:jnb_mobile/models/user_model.dart';
 import 'package:jnb_mobile/repositories/authentication_repository.dart';
 import 'package:meta/meta.dart';
 import 'package:jnb_mobile/repositories/user_repository.dart';
@@ -53,21 +53,12 @@ class AuthenticationBloc
       case AuthenticationStatus.unauthenticated:
         return const AuthenticationState.unauthenticated();
       case AuthenticationStatus.authenticated:
-        final user = await _tryGetUser();
+        final user = await _userRepository.getUser();
         return user != null
             ? AuthenticationState.authenticated(user)
             : const AuthenticationState.unauthenticated();
       default:
         return const AuthenticationState.unknown();
-    }
-  }
-
-  Future<User> _tryGetUser() async {
-    try {
-      final user = await _userRepository.getUser();
-      return user;
-    } on Exception {
-      return null;
     }
   }
 }

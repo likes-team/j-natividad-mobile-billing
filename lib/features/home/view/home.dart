@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:jnb_mobile/modules/map/pages/map.dart';
-import 'package:jnb_mobile/modules/offline_manager/services/failed_deliveries.dart';
-import 'package:jnb_mobile/modules/profile/pages/profile.dart';
+import 'package:jnb_mobile/features/delivery_map/view/map.dart';
+import 'package:jnb_mobile/features/profile/view/profile.dart';
 import '../../../utilities/colors.dart' show AppColors;
-import '../../../modules/home/components/app_bar.dart' show AppBarComponent;
-import '../../../modules/home/components/drawer.dart' show DrawerComponent;
-import '../../../modules/deliveries/pages/deliveries_page.dart' show DeliveriesPage;
-import '../../../modules/location_updater/pages/location_updater.dart'
-    show LocationUpdaterPage;
-import '../../../modules/dashboard/pages/dashboard.dart' show DashboardPage;
+import 'components/app_bar.dart' show AppBarComponent;
+import 'components/drawer.dart' show DrawerComponent;
+import '../../delivery/view/deliveries_page.dart' show DeliveriesPage;
+
+import '../../dashboard/view/dashboard.dart' show DashboardPage;
 // import 'modules/profile/pages/profile.dart' show ProfilePage;
 
 class Home extends StatefulWidget {
@@ -22,13 +20,11 @@ class _HomeState extends State<Home> {
   String _title;
   int _currentPage = 2;
 
-  final failedDeliveriesService = FailedDeliveryService();
 
   final List<Widget> _pages = [
     DashboardPage(),
     MapPage(),
     DeliveriesPage(),
-    LocationUpdaterPage(),
     ProfilePage(),
   ];
 
@@ -41,42 +37,41 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBarComponent(
-        title: _title,
-      ),
-      body: _pages[_currentPage],
-      drawer: DrawerComponent(),
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: onTabTapped,
-        currentIndex: _currentPage,
-        selectedItemColor: AppColors.home,
-        unselectedItemColor: Colors.grey[500],
-        showUnselectedLabels: true,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.dashboard,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        appBar: AppBarComponent(
+          title: _title,
+        ),
+        body: _pages[_currentPage],
+        drawer: DrawerComponent(),
+        bottomNavigationBar: BottomNavigationBar(
+          onTap: onTabTapped,
+          currentIndex: _currentPage,
+          selectedItemColor: AppColors.home,
+          unselectedItemColor: Colors.grey[500],
+          showUnselectedLabels: true,
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.dashboard,
+              ),
+              label: 'Dashboard',
             ),
-            label: 'Dashboard',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.map),
-            label: 'Map',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.motorcycle),
-            label: 'Deliveries',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.edit_location),
-            label: 'Location Updater',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
+            BottomNavigationBarItem(
+              icon: Icon(Icons.map),
+              label: 'Map',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.motorcycle),
+              label: 'Deliveries',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -101,11 +96,6 @@ class _HomeState extends State<Home> {
           }
           break;
         case 3:
-          {
-            _title = "Location Updater";
-          }
-          break;
-        case 4:
           {
             _title = "Profile";
           }

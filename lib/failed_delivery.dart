@@ -31,6 +31,36 @@ class FailedDelivery {
   @HiveField(8)
   final String fileName;
 
+  @HiveField(9)
+  String status;
+
+  @HiveField(10)
+  final String subscriberFname;
+
+  @HiveField(11)
+  final String subscriberLname;
+
+  @HiveField(12)
+  final String subscriberAddress;
+
+  @HiveField(13)
+  final String subscriberEmail;
+
+  @HiveField(14)
+  final String deliveryDate;
+
+  @HiveField(15)
+  final String areaID;
+
+  @HiveField(16)
+  final String areaName;
+
+  @HiveField(17)
+  final String subAreaID;
+
+  @HiveField(18)
+  final String subAreaName;
+
   FailedDelivery({
     this.id,
     this.messengerID,
@@ -41,5 +71,29 @@ class FailedDelivery {
     this.accuracy,
     this.imagePath,
     this.fileName,
+    this.status,
+    this.subscriberFname,
+    this.subscriberLname,
+    this.subscriberAddress,
+    this.subscriberEmail,
+    this.deliveryDate,
+    this.areaID,
+    this.areaName,
+    this.subAreaID,
+    this.subAreaName,
   });
+
+  String get fullName {
+    return this.subscriberFname + " " + this.subscriberLname;
+  }
+
+  String get coordinates {
+    if (((this.latitude != null) & (this.latitude != "")) &
+        (this.longitude != null) &
+        (this.longitude != "")) {
+      return this.latitude + " " + this.longitude;
+    }
+
+    return null;
+  }
 }

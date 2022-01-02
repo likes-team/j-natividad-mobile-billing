@@ -6,33 +6,54 @@ class LoadingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height / 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Center(
-                    child: Image(
-                      width: double.infinity,
-                      height: 500,
-                      image: AssetImage('assets/image/logo.png')
+        child: SafeArea(
+          child: Stack(
+            children: <Widget>[
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 100),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Expanded(child: Container()),
+                        Container(
+                          height: 200.0,
+                          child: Image.asset(
+                            'assets/image/logo.png',
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        Expanded(child: Container()),
+                      ],
                     ),
                   ),
-                  CircularProgressIndicator(
-                    backgroundColor: Colors.grey,
-                    valueColor: new AlwaysStoppedAnimation<Color>(Colors.deepOrange),
-                    //color: Color(0xffed3d38)
-                  ),
-                ],
+                ),
               ),
-            ),
-          ],
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: SafeArea(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.symmetric(vertical: 32.0),
+                    child: Column(
+                      children: <Widget>[
+                        CircularProgressIndicator(
+                            valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue))
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
   }
 }
