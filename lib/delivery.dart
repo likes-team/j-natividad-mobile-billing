@@ -50,6 +50,9 @@ class Delivery {
   @HiveField(14)
   final String imagePath;
 
+  @HiveField(15)
+  final String contractNo;
+
   Delivery({
     this.id,
     this.status,
@@ -65,7 +68,8 @@ class Delivery {
     this.areaName,
     this.subAreaID,
     this.subAreaName,
-    this.imagePath
+    this.imagePath,
+    this.contractNo
   });
 
   factory Delivery.fromJson(json) {
@@ -85,7 +89,8 @@ class Delivery {
         areaName: json['area_name'],
         subAreaID: json['sub_area_id'],
         subAreaName: json['sub_area_name'],
-        imagePath: json['image_path']
+        imagePath: json['image_path'],
+        contractNo: json['contract_no']
       );
     }
     return null;
@@ -107,7 +112,8 @@ class Delivery {
       areaName: delivery.areaName,
       subAreaID: delivery.subAreaID,
       subAreaName: delivery.subAreaName,
-      imagePath: newImagePath ?? delivery.imagePath
+      imagePath: newImagePath ?? delivery.imagePath,
+      contractNo: delivery.contractNo
     );
   }
 
@@ -127,7 +133,8 @@ class Delivery {
       areaName: delivery.areaName,
       subAreaID: delivery.subAreaID,
       subAreaName: delivery.subAreaName,
-      imagePath: delivery.imagePath
+      imagePath: delivery.imagePath,
+      contractNo: delivery.contractNo
     );
   }
 
@@ -143,5 +150,9 @@ class Delivery {
     }
 
     return null;
+  }
+
+  String generateImageName (){
+    return "${this.subscriberFname}${this.subscriberLname}${DateTime.now().toString().trim()}";
   }
 }

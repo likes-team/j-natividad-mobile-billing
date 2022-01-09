@@ -9,13 +9,13 @@ class DeliveryTile extends StatelessWidget {
     this.onTap,
     this.subtitle2,
     this.subtitle3,
-    this.subtitle4,
+    this.subtitle4 = "",
   }) : super(key: key);
   final String title;
   final String subtitle;
   final String subtitle2;
   final String subtitle3;
-    final String subtitle4;
+  final String subtitle4;
   final VoidCallback onTap;
 
   @override
@@ -72,17 +72,17 @@ class DeliveryTile extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      // SizedBox(
-                      //   height: 5,
-                      // ),
-                      // Text(
-                      //   subtitle4,
-                      //   style: TextStyle(
-                      //     color: AppColors.accent,
-                      //     fontSize: 12,
-                      //     fontWeight: FontWeight.normal,
-                      //   ),
-                      // ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        subtitle4,
+                        style: TextStyle(
+                          color: AppColors.accent,
+                          fontSize: 12,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
                          SizedBox(
                         height: 5,
                       ),

@@ -23,7 +23,7 @@ class DeliveryMapCubit extends Cubit<DeliveryMapState> {
   void loadDeliveryMarkers() async{
     await setCustomMarker();
 
-    final List<Delivery> deliveries = _deliveryCubit.state.deliveriesList;
+    final List<Delivery> deliveries = _deliveryCubit.state.inProgressList;
     List<Marker> markersList = [];
     print(deliveries);
 

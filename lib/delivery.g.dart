@@ -32,13 +32,14 @@ class DeliveryAdapter extends TypeAdapter<Delivery> {
       subAreaID: fields[12] as String,
       subAreaName: fields[13] as String,
       imagePath: fields[14] as String,
+      contractNo: fields[15] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Delivery obj) {
     writer
-      ..writeByte(15)
+      ..writeByte(16)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -68,7 +69,9 @@ class DeliveryAdapter extends TypeAdapter<Delivery> {
       ..writeByte(13)
       ..write(obj.subAreaName)
       ..writeByte(14)
-      ..write(obj.imagePath);
+      ..write(obj.imagePath)
+      ..writeByte(15)
+      ..write(obj.contractNo);
   }
 
   @override

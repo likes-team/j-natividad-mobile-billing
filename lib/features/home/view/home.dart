@@ -18,11 +18,11 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   String _title;
-  int _currentPage = 2;
+  int _currentPage = 1;
 
 
   final List<Widget> _pages = [
-    DashboardPage(),
+    // DashboardPage(),
     MapPage(),
     DeliveriesPage(),
     ProfilePage(),
@@ -52,12 +52,12 @@ class _HomeState extends State<Home> {
           unselectedItemColor: Colors.grey[500],
           showUnselectedLabels: true,
           items: [
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.dashboard,
-              ),
-              label: 'Dashboard',
-            ),
+            // BottomNavigationBarItem(
+            //   icon: Icon(
+            //     Icons.dashboard,
+            //   ),
+            //   label: 'Dashboard',
+            // ),
             BottomNavigationBarItem(
               icon: Icon(Icons.map),
               label: 'Map',
@@ -80,22 +80,22 @@ class _HomeState extends State<Home> {
     setState(() {
       _currentPage = index;
       switch (index) {
+        // case 0:
+        //   {
+        //     _title = "Dashboard";
+        //   }
+        //   break;
         case 0:
-          {
-            _title = "Dashboard";
-          }
-          break;
-        case 1:
           {
             _title = "Map";
           }
           break;
-        case 2:
+        case 1:
           {
             _title = "Deliveries";
           }
           break;
-        case 3:
+        case 2:
           {
             _title = "Profile";
           }

@@ -48,8 +48,8 @@ class ImageViewerPage extends StatelessWidget {
             ),
           ),
         ),
-        imageProvider: delivery.status != "IN-PROGRESS" 
-        ? CachedNetworkImageProvider(delivery.imagePath) : FileImage(deliveryPhoto),
+        imageProvider: delivery.status == "IN-PROGRESS" || delivery.status == "DELIVERING"
+        ? FileImage(deliveryPhoto) : CachedNetworkImageProvider(delivery.imagePath),
       )
   ),
     );

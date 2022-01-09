@@ -121,18 +121,18 @@ class AppBarComponent extends StatelessWidget implements PreferredSizeWidget {
           fontSize: 20,
         ),
       ),
-      actions: [
-        Padding(
-          padding: EdgeInsets.only(right: 20.0),
-          child: GestureDetector(
-            onTap: () => _showFilterDialog(context),
-            child: Icon(
-              Icons.sort,
-              size: 26.0,
-            ),
-          ),
-        ),
-      ],
+      // actions: [
+      //   Padding(
+      //     padding: EdgeInsets.only(right: 20.0),
+      //     child: GestureDetector(
+      //       onTap: () => _showFilterDialog(context),
+      //       child: Icon(
+      //         Icons.sort,
+      //         size: 26.0,
+      //       ),
+      //     ),
+      //   ),
+      // ],
     );
   }
 }

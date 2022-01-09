@@ -24,54 +24,70 @@ class FailedDeliverCubit extends Cubit<FailedDeliverState> {
   void redeliverFailedDeliveries() async {
     if(state.redeliverStatus == RedeliverStatus.delivering){
       emit(state.copyWith(redeliverStatus: RedeliverStatus.info));
-      emit(state.copyWith(redeliverStatus: RedeliverStatus.delivering, statusMessage: "Already redelivering failed deliveries"));
+      emit(state.copyWith(redeliverStatus: RedeliverStatus.delivering, statusMessage: "Already uploading deliveries"));
       return;
     }
 
     final Box<FailedDelivery> hiveBox = Hive.box(AppGlobals.failedDeliveriesBoxName);
     final failedDeliveries = hiveBox.values.toList();
-    print("failedDeliveries");
-    print(failedDeliveries);
 
     if(failedDeliveries.isEmpty){
       emit(state.copyWith(redeliverStatus: RedeliverStatus.unknown));
-      emit(state.copyWith(redeliverStatus: RedeliverStatus.info, statusMessage: "No failed deliveries yet"));
+      emit(state.copyWith(redeliverStatus: RedeliverStatus.info, statusMessage: "No for upload deliveries yet"));
       return;
     }
 
-    emit(state.copyWith(redeliverStatus: RedeliverStatus.delivering, statusMessage: "Redelivering failed deliveries"));
+    final int forUploadCount = failedDeliveries.length;
 
-    try {
+    emit(state.copyWith(
+      forUploadCount: forUploadCount,
+      uploadedCount: 0,
+      redeliverStatus: RedeliverStatus.delivering, statusMessage: "Redelivering failed deliveries"));
+
+    int uploadedCount = 0;
+
+    // try {
       for(var failedDelivery in failedDeliveries){
-        _deliveryRepository.redeliver(
-          failedDelivery: failedDelivery, 
-        ).then((response) {
-          emit(state.copyWith(
-            redeliverStatus: RedeliverStatus.delivered, 
-            statusMessage: "Delivered Successfully"
-          ));
+        try{
+          await _deliveryRepository.redeliver(
+            failedDelivery: failedDelivery, 
+          ).then((response) {
+            _deliveryCubit.updateFailedDeliveryData(
+              deliveryId: failedDelivery.id,
+              newStatus: response.data['data']['status'],
+              newImagePath: response.data['data']['image_path']
+            );
 
-          _deliveryCubit.updateFailedDeliveryData(
-            deliveryId: failedDelivery.id,
-            newStatus: response.data['data']['status'],
-            newImagePath: response.data['data']['image_path']
-          );
+            _removeFailedDelivery(failedDelivery);
 
-          _removeFailedDelivery(failedDelivery);
-          _deliveryCubit.fetchDeliveriesActivity();
-        }).catchError((onError){
+            uploadedCount++;
+            emit(state.copyWith(uploadedCount: uploadedCount));
+          }).catchError((onError){
+            throw Exception("Failed to upload: ${failedDelivery.contractNo}- ${failedDelivery.fullName}");
+          });
+        } catch(err){
           emit(state.copyWith(
             redeliverStatus: RedeliverStatus.failed, 
-            statusMessage: "Redeliver Failed, resend when internet is available."
+            statusMessage: err.toString()
           ));
-        });
+        }
       }
-    } catch (err) {
+
+      _deliveryCubit.fetchDeliveriesActivity();
+
       emit(state.copyWith(
-        redeliverStatus: RedeliverStatus.failed, 
-        statusMessage: err.toString()
+        redeliverStatus: RedeliverStatus.delivered, 
+        statusMessage: "Uploaded Successfully",
+        forUploadCount: 0,
+        uploadedCount: 0,
       ));
-    }
+
+    // } catch (err) {
+    //   emit(state.copyWith(
+    //     redeliverStatus: RedeliverStatus.failed, 
+    //     statusMessage: err.toString()
+    //   ));
+    // }
   }
 
   void _removeFailedDelivery(FailedDelivery delivery) {

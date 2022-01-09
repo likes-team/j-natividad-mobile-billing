@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jnb_mobile/features/app/view/loading_page.dart';
 import 'package:jnb_mobile/features/authentication/bloc/authentication_bloc.dart';
+import 'package:jnb_mobile/features/delivery/bloc/deliver/deliver_cubit.dart';
 import 'package:jnb_mobile/features/delivery/bloc/delivery_cubit.dart';
 import 'package:jnb_mobile/features/delivery/bloc/failed_deliver/failed_deliver_cubit.dart';
 import 'package:jnb_mobile/features/delivery/bloc/update_location/update_location_cubit.dart';
@@ -69,6 +70,11 @@ class App extends StatelessWidget {
           ),
           ),
           BlocProvider(create: (context) => FailedDeliverCubit(
+            deliveryRepository: deliveryRepository,
+            deliveryCubit: BlocProvider.of<DeliveryCubit>(context)
+            )
+          ),
+          BlocProvider(create: (context) => DeliverCubit(
             deliveryRepository: deliveryRepository,
             deliveryCubit: BlocProvider.of<DeliveryCubit>(context)
             )

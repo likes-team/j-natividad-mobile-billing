@@ -33,25 +33,66 @@ class _FailedDeliveriesPageState extends State<FailedDeliveriesPage> {
     _failedDeliverCubit.redeliverFailedDeliveries();
   }
 
+  _showLoaderDialog(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      content: BlocBuilder<FailedDeliverCubit, FailedDeliverState>(
+        builder: (context, state) {
+          return Container(
+            height: 80,
+            child: Column(
+              children: [
+                new Row(
+                  children: [
+                    CircularProgressIndicator(),
+                    Container(
+                        margin: EdgeInsets.only(left: 7),
+                        child: Text("Uploading, please wait...")),
+                  ],
+                ),
+                Container(
+                    margin: EdgeInsets.only(top: 20), child: Text("${state.uploadedCount} of ${state.forUploadCount}")),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: alert);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<FailedDeliverCubit, FailedDeliverState>(
+      listenWhen: (previous, current) {
+        return previous.redeliverStatus != current.redeliverStatus;      
+      },
       listener: (context, state) {
-        if(state.redeliverStatus == RedeliverStatus.info){
+        if (state.redeliverStatus == RedeliverStatus.info) {
           showTopSnackBar(
             context,
             CustomSnackBar.info(
               message: state.statusMessage,
             ),
           );
-        } else if(state.redeliverStatus == RedeliverStatus.delivering){
+        } else if (state.redeliverStatus == RedeliverStatus.delivering) {
           showTopSnackBar(
             context,
             CustomSnackBar.info(
               message: state.statusMessage,
             ),
           );
-        } else if(state.redeliverStatus == RedeliverStatus.delivered){
+          _showLoaderDialog(context);
+        } else if (state.redeliverStatus == RedeliverStatus.delivered) {
+          Navigator.pop(context);
           showTopSnackBar(
             context,
             CustomSnackBar.success(
@@ -71,7 +112,7 @@ class _FailedDeliveriesPageState extends State<FailedDeliveriesPage> {
         appBar: AppBar(
           backgroundColor: Colors.white,
           title: Text(
-            "Failed Deliveries",
+            "For Upload Deliveries",
             style: TextStyle(
               color: AppColors.home,
               fontWeight: FontWeight.bold,
@@ -86,14 +127,14 @@ class _FailedDeliveriesPageState extends State<FailedDeliveriesPage> {
             builder: (context, state) {
               if (state.failedDeliveriesList == null ||
                   state.failedDeliveriesList.isEmpty) {
-                return Text(
-                    "Your failed deliveries will display here.");
+                return Text("Your for upload deliveries will display here.");
               }
 
               return ListView.builder(
                 itemCount: state.failedDeliveriesList.length,
                 itemBuilder: (context, index) {
-                  final FailedDelivery failedDelivery = state.failedDeliveriesList[index];
+                  final FailedDelivery failedDelivery =
+                      state.failedDeliveriesList[index];
 
                   return FailedDeliveryTileComponent(
                     id: failedDelivery.id,
@@ -102,8 +143,7 @@ class _FailedDeliveriesPageState extends State<FailedDeliveriesPage> {
                     subtitle1: failedDelivery.areaName,
                     onTap: () {
                       _deliveryCubit.getDelivery(failedDelivery.id);
-                      Navigator.pushNamed(
-                          context, '/delivery');
+                      Navigator.pushNamed(context, '/delivery');
                     },
                   );
                 },
@@ -129,8 +169,7 @@ class _FailedDeliveriesPageState extends State<FailedDeliveriesPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Icon(Icons.upload_file, color: Colors.white),
-                        Text("REDELIVER ALL",
-                            style: TextStyle(color: Colors.white))
+                        Text("UPLOAD", style: TextStyle(color: Colors.white))
                       ],
                     ),
                   ),

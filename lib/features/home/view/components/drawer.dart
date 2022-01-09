@@ -30,7 +30,7 @@ class DrawerComponent extends StatelessWidget {
 
           ListTile(
             leading: Icon(Icons.history),
-            title: Text('Activities/Failed Deliveries'),
+            title: Text('For Upload Deliveries'),
             onTap: () {
               Navigator.pushNamed(context, '/deliveries/failed');
             },

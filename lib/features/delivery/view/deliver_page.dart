@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dio/dio.dart';
 import 'package:jnb_mobile/features/authentication/bloc/authentication_bloc.dart';
+import 'package:jnb_mobile/features/delivery/bloc/deliver/deliver_cubit.dart';
 import 'package:jnb_mobile/features/delivery/bloc/delivery_cubit.dart';
 import 'package:jnb_mobile/features/delivery/view/components/update_location_modal.dart';
 import 'package:jnb_mobile/features/location/bloc/location_cubit.dart';
@@ -29,6 +30,7 @@ class DeliverPage extends StatefulWidget {
 class _DeliverPageState extends State<DeliverPage> {
   AuthenticationBloc _authenticationBloc;
   DeliveryCubit _deliveryCubit;
+  DeliverCubit _deliverCubit;
   LocationCubit _userLocation;
 
   File _deliveryPhoto;
@@ -54,7 +56,12 @@ class _DeliverPageState extends State<DeliverPage> {
     // Get bloc instances
     _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
     _deliveryCubit = BlocProvider.of<DeliveryCubit>(context);
+    _deliverCubit = BlocProvider.of<DeliverCubit>(context);
     _userLocation = BlocProvider.of<LocationCubit>(context);
+
+    if(_deliveryCubit.state.selectedDelivery.imagePath != null){
+      _deliveryPhoto = File(_deliveryCubit.state.selectedDelivery.imagePath);
+    }
   }
 
   @override
@@ -64,11 +71,11 @@ class _DeliverPageState extends State<DeliverPage> {
   }
 
   void _onPressedDeliver() {
-    _deliveryCubit.deliver(_deliveryCubit.state.selectedDelivery,
+    _deliverCubit.deliver(_deliveryCubit.state.selectedDelivery,
         _deliveryPhoto, _userLocation.state);
   }
 
-  Future capturePhoto() async {
+  Future _capturePhoto() async {
     if (_deliveryCubit.state.selectedDelivery.status != "IN-PROGRESS") {
       return;
     }
@@ -85,7 +92,7 @@ class _DeliverPageState extends State<DeliverPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<DeliveryCubit, DeliveryState>(
+    return BlocListener<DeliverCubit, DeliverState>(
       listener: (context, state) {
         if (state.deliverStatus == DeliverStatus.delivering) {
           showTopSnackBar(
@@ -159,7 +166,6 @@ class _DeliverPageState extends State<DeliverPage> {
                       BlocBuilder<LocationCubit, UserLocation>(
                         builder: (context, state) {
                           return DeliveryDetailComponent(
-                            delivery: _deliveryCubit.state.selectedDelivery,
                             deliveryPhoto: _deliveryPhoto,
                           );
                         },
@@ -185,7 +191,7 @@ class _DeliverPageState extends State<DeliverPage> {
             children: <Widget>[
               Expanded(
                 child: GestureDetector(
-                  onTap: capturePhoto,
+                  onTap: _capturePhoto,
                   child: Container(
                     child: BlocBuilder<DeliveryCubit, DeliveryState>(
                       builder: (context, state) {
@@ -227,11 +233,11 @@ class _DeliverPageState extends State<DeliverPage> {
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Icon(Icons.upload_file,
+                            Icon(Icons.save,
                                 color: AppColors
                                     .getDisabledColorFromDeliveryStatus(
                                         status: state.selectedDelivery.status)),
-                            Text("DELIVER",
+                            Text("SAVE",
                                 style: TextStyle(
                                     color: AppColors
                                         .getDisabledColorFromDeliveryStatus(

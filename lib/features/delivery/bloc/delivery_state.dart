@@ -7,57 +7,53 @@ enum DeliveriesStatus{
   unknown,
 }
 
-enum DeliverStatus {
-  delivered,
-  delivering,
-  failed,
-  unknown,
-  info
-}
-
 class DeliveryState extends Equatable {
-  final List<Delivery> deliveriesList;
+  final List<Delivery> inProgressList;
+  final List<Delivery> pendingList;
+  final List<Delivery> deliveredList;
   final List<FailedDelivery> failedDeliveriesList;
   final Delivery selectedDelivery;
   final DeliveriesStatus deliveriesStatus;
-  final DeliverStatus deliverStatus;
   final String statusMessage;
 
   const DeliveryState({
-    this.deliveriesList, 
+    this.inProgressList,
+    this.pendingList,
+    this.deliveredList,
     this.failedDeliveriesList,
     this.deliveriesStatus, 
     this.statusMessage, 
     this.selectedDelivery,
-    this.deliverStatus,
   });
 
   DeliveryState copyWith({
-    List<Delivery> deliveriesList,
+    List<Delivery> inProgressList,
+    List<Delivery> pendingList,
+    List<Delivery> deliveredList,
     Delivery selectedDelivery,
     DeliveriesStatus deliveriesStatus,
     String messageStatus,
-    DeliverStatus deliverStatus,
-    DeliverStatus redeliverStatus,
     List<FailedDelivery> failedDeliveriesList
   }){
     return DeliveryState(
-      deliveriesList: deliveriesList ?? this.deliveriesList,
+      inProgressList: inProgressList ?? this.inProgressList,
+      pendingList: pendingList ?? this.pendingList,
+      deliveredList: deliveredList ?? this.deliveredList,
       selectedDelivery: selectedDelivery ?? this.selectedDelivery,
       deliveriesStatus: deliveriesStatus ?? this.deliveriesStatus,
       statusMessage: messageStatus ?? this.statusMessage,
-      deliverStatus: deliverStatus ?? this.deliverStatus,
       failedDeliveriesList: failedDeliveriesList ?? this.failedDeliveriesList
     );
   }
 
   @override
   List<Object> get props => [
-    deliveriesList, 
+    inProgressList,
+    pendingList,
+    deliveredList,
     deliveriesStatus, 
     statusMessage, 
     selectedDelivery,
-    deliverStatus,
     failedDeliveriesList,
   ];
 }

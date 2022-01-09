@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jnb_mobile/features/authentication/bloc/authentication_bloc.dart';
+import 'package:jnb_mobile/features/delivery/bloc/delivery_cubit.dart';
 import 'package:jnb_mobile/repositories/authentication_repository.dart';
 import 'package:jnb_mobile/utilities/colors.dart';
 
@@ -61,6 +62,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   BlocBuilder<AuthenticationBloc, AuthenticationState>(
                       builder: (context, state) {
+                    if (state.user == null) {
+                      return SizedBox();
+                    }
+
                     return Row(
                       children: [
                         SizedBox(
@@ -299,6 +304,149 @@ class _ProfilePageState extends State<ProfilePage> {
             //     ],
             //   ),
             // ),
+            Container(
+              margin: EdgeInsets.only(top: 10),
+              child: AspectRatio(
+                aspectRatio: 1.3,
+                child: BlocBuilder<DeliveryCubit, DeliveryState>(
+                  builder: (context, state) {
+                    int inProgressCount = state.inProgressList?.length;
+                    int capturedCount = state.failedDeliveriesList != null ? state.failedDeliveriesList.length : 0;
+                    int pendingCount = state.pendingList?.length;
+                    int deliveredCount = state.deliveredList?.length;
+
+                    return Column(
+                      children: [
+                        Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Column(
+                                  children: [
+                                    Icon(Icons.stop),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    RichText(
+                                      text: TextSpan(children: [
+                                        TextSpan(
+                                          text: inProgressCount.toString(),
+                                          style: TextStyle(
+                                              color: AppColors.secondary,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        TextSpan(
+                                            text: '  In-Progress',
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.normal))
+                                      ]),
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    Icon(Icons.file_upload),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    RichText(
+                                      text: TextSpan(children: [
+                                        TextSpan(
+                                          text: capturedCount.toString(),
+                                          style: TextStyle(
+                                              color: AppColors.secondary,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        TextSpan(
+                                            text: '  Captured/Saved',
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.normal))
+                                      ]),
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Column(
+                                  children: [
+                                    Icon(Icons.pending),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    RichText(
+                                      text: TextSpan(children: [
+                                        TextSpan(
+                                          text: pendingCount.toString(),
+                                          style: TextStyle(
+                                              color: AppColors.secondary,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        TextSpan(
+                                            text: '  Pending',
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.normal))
+                                      ]),
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    Icon(Icons.check_box),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    RichText(
+                                      text: TextSpan(children: [
+                                        TextSpan(
+                                          text: deliveredCount.toString(),
+                                          style: TextStyle(
+                                              color: AppColors.secondary,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        TextSpan(
+                                            text: '  Delivered',
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.normal))
+                                      ]),
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            )
           ],
         ),
       ),

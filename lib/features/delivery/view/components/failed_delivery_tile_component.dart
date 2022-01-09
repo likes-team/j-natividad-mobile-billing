@@ -43,6 +43,7 @@ class FailedDeliveryTileComponent extends StatelessWidget {
                 // ),
                 title: Text(
                   title,
+                  overflow: TextOverflow.visible,
                   style: TextStyle(
                     color: AppColors.secondary,
                     fontSize: 18,
@@ -78,42 +79,41 @@ class FailedDeliveryTileComponent extends StatelessWidget {
                     ],
                   ),
                 ),
-                
                 tileColor: Colors.white,
-                trailing: Container(
-                  width: 110,
-                  child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(left: 50),
-                            child: TextButton(
-                              onPressed: () async {
-                              },
-                              style: TextButton.styleFrom(
-                                padding: EdgeInsets.zero,
-                                minimumSize: Size(50, 25),
-                                backgroundColor: AppColors.secondary,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                    5,
-                                  ),
-                                ),
-                              ),
-                              child: Text('Redeliver',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 10,
-                                ),
-                              ),
-                            ),
-                          ),
+                // trailing: Container(
+                //   width: 110,
+                //   child: Align(
+                //       alignment: Alignment.centerRight,
+                //       child: Row(
+                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //         children: [
+                //           // Container(
+                //           //   margin: EdgeInsets.only(left: 50),
+                //           //   child: TextButton(
+                //           //     onPressed: () async {
+                //           //     },
+                //           //     style: TextButton.styleFrom(
+                //           //       padding: EdgeInsets.zero,
+                //           //       minimumSize: Size(50, 25),
+                //           //       backgroundColor: AppColors.secondary,
+                //           //       shape: RoundedRectangleBorder(
+                //           //         borderRadius: BorderRadius.circular(
+                //           //           5,
+                //           //         ),
+                //           //       ),
+                //           //     ),
+                //           //     child: Text('Redeliver',
+                //           //       style: TextStyle(
+                //           //         color: Colors.white,
+                //           //         fontSize: 10,
+                //           //       ),
+                //           //     ),
+                //           //   ),
+                //           // ),
                       
-                        ],
-                      )),
-                ),
+                //         ],
+                //       )),
+                // ),
               ),
               SizedBox(
                 height: 10,
