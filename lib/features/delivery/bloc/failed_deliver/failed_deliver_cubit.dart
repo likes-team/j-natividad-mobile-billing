@@ -94,4 +94,21 @@ class FailedDeliverCubit extends Cubit<FailedDeliverState> {
     final Box<FailedDelivery> hiveBox = Hive.box(AppGlobals.failedDeliveriesBoxName);
     hiveBox.delete(delivery.id);
   }
+
+  void removeFailedDelivery(FailedDelivery delivery) {
+    final Box<FailedDelivery> failedDeliveriesBox = Hive.box(AppGlobals.failedDeliveriesBoxName);
+    failedDeliveriesBox.delete(delivery.id);
+    final Box<Delivery> deliveriesBox = Hive.box(AppGlobals.deliveriesBoxName);
+
+    final Delivery deliveryToUpdate = deliveriesBox.get(delivery.id);
+
+    final Delivery updatedDeliveryData = Delivery.updateStatusAndImage(
+      delivery: deliveryToUpdate, 
+      newStatus: "IN-PROGRESS",
+      newImagePath: null
+    );
+    
+    _deliveryCubit.updateDeliveryData(updatedDeliveryData);
+    _deliveryCubit.fetchDeliveriesActivity();
+  }
 }

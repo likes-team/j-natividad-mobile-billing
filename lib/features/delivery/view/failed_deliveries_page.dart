@@ -145,6 +145,10 @@ class _FailedDeliveriesPageState extends State<FailedDeliveriesPage> {
                       _deliveryCubit.getDelivery(failedDelivery.id);
                       Navigator.pushNamed(context, '/delivery');
                     },
+                    onConfirm: (){
+                      _failedDeliverCubit.removeFailedDelivery(failedDelivery);
+                      Navigator.pop(context);
+                    },
                   );
                 },
               );

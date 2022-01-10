@@ -42,9 +42,13 @@ class DeliveryCubit extends Cubit<DeliveryState> {
 
       //   return;
       // }
+      List<String> deliveryIds = [];
 
       for (var delivery in deliveries) {
+        deliveryIds.add(delivery.id);
+
         Delivery hiveDeliveryData = hiveBox.get(delivery.id);
+
         if(hiveDeliveryData == null){
           hiveBox.put(delivery.id, delivery);
           continue;
@@ -61,6 +65,12 @@ class DeliveryCubit extends Cubit<DeliveryState> {
 
         if(delivery.status != "IN-PROGRESS"){
           hiveBox.put(delivery.id, delivery);
+        }
+      }
+
+      for(var storedDelivery in hiveBox.values.toList()){
+        if(!deliveryIds.contains(storedDelivery.id)){
+          hiveBox.delete(storedDelivery.id);
         }
       }
 
