@@ -159,6 +159,25 @@ class DeliveryCubit extends Cubit<DeliveryState> {
     ));
   }
 
+  void getDeliveryByContractNo(String contractNo){
+    final Box<Delivery> box = Hive.box(_deliveriesBoxName);
+
+    var searchedDelivery = box.values.where((delivery) {
+     return delivery.contractNo.contains(contractNo);
+    }).toList();
+
+    emit(state.copyWith(messageStatus: ""));
+
+    if(searchedDelivery.length == 0){
+      emit(state.copyWith(messageStatus: "no_qr_found"));
+      return;
+    }
+
+    emit(state.copyWith(
+      selectedDelivery: box.get(searchedDelivery[0].id),
+    ));
+  }
+
   void fetchDeliveriesActivity() async{
     final Box<FailedDelivery> hiveBox = Hive.box(AppGlobals.failedDeliveriesBoxName);
     final deliveringList = hiveBox.values.toList();

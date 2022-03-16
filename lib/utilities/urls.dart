@@ -1,6 +1,6 @@
 class AppUrls {
   static const String serverURL = "http://13.212.16.21";
-  // static const String serverURL = "http://192.168.214.39:5000";
+  // static const String serverURL = "http://192.168.100.7:5000";
 
   static const String loginURL = serverURL + "/auth/api/users/login";
 

@@ -7,6 +7,7 @@ import 'package:jnb_mobile/features/delivery/bloc/delivery_cubit.dart';
 import 'package:jnb_mobile/features/delivery/view/components/delivery_tile_component.dart';
 import 'package:hive/hive.dart';
 import 'package:jnb_mobile/delivery.dart';
+import 'package:jnb_mobile/features/delivery/view/components/qr_scanner_modal.dart';
 import 'package:jnb_mobile/utilities/colors.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -18,9 +19,16 @@ class DeliveriesPage extends StatefulWidget {
   _DeliveriesPageState createState() => _DeliveriesPageState();
 }
 
-class _DeliveriesPageState extends State {
+class _DeliveriesPageState extends State with SingleTickerProviderStateMixin {
   DeliveryCubit _deliveryCubit;
   TextEditingController _searchController = TextEditingController();
+  bool isOpened = false;
+  AnimationController _animationController;
+  Animation<Color> _buttonColor;
+  Animation<double> _animationIcon;
+  Animation<double> _translateButton;
+  Curve _curve = Curves.easeInOut;
+  double _fabHeight = 56.0;
 
   @override
   void initState() {
@@ -31,6 +39,20 @@ class _DeliveriesPageState extends State {
 
     // Load initial data
     _deliveryCubit.fetchDeliveries();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 500),
+    )..addListener(() {
+        setState(() {});
+      });
+    _animationIcon = Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
+    _buttonColor = ColorTween(begin: AppColors.secondary, end: AppColors.primary).animate(
+        CurvedAnimation(
+            parent: _animationController, curve: Interval(0.0, 1.0, curve: Curves.linear)));
+    _translateButton = Tween<double>(begin: _fabHeight, end: -14.0).animate(CurvedAnimation(
+        parent: _animationController, curve: Interval(0.0, 0.75, curve: Curves.linear)));
+    Future.delayed(Duration(seconds: 2));
   }
 
   void _onRefreshDeliveries() async {
@@ -39,6 +61,57 @@ class _DeliveriesPageState extends State {
 
   void _search(String query) {
     _deliveryCubit.search(contractNo: query);
+  }
+
+  Widget _buttonScanQR() {
+    return Container(
+      child: FloatingActionButton(
+        mini: true,
+      onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return QrScannerModal();
+            },
+          );
+        },
+        child: Icon(Icons.qr_code_scanner_rounded),
+        tooltip: 'Scan QR',
+      ),
+    );
+  }
+
+  Widget _buttonRefresh() {
+    return Container(
+      child: FloatingActionButton(
+        mini: true,
+        onPressed: () => _onRefreshDeliveries(),
+        child: Icon(Icons.refresh),
+        tooltip: 'Refresh deliveries',
+      ),
+    );
+  }
+
+  Widget _buttonToggle() {
+    return Container(
+      child: FloatingActionButton(
+        mini: true,
+        onPressed: _animate,
+        child: AnimatedIcon(
+          icon: AnimatedIcons.menu_close,
+          progress: _animationIcon,
+        ),
+        tooltip: 'Search Group',
+      ),
+    );
+  }
+  
+  void _animate() {
+    if (!isOpened) {
+      _animationController.forward();
+    } else
+      _animationController.reverse();
+    isOpened = !isOpened;
   }
 
   @override
@@ -88,11 +161,29 @@ class _DeliveriesPageState extends State {
         ),
       ],
       child: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: _onRefreshDeliveries,
-          child: Icon(Icons.refresh),
-          backgroundColor: Colors.green,
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Transform(
+              transform: Matrix4.translationValues(0.0, _translateButton.value * 1.7, 0.0),
+              child: _buttonScanQR(),
+            ),
+            Transform(
+              transform: Matrix4.translationValues(0.0, _translateButton.value * 0.85, 0.0),
+              child: _buttonRefresh(),
+            ),
+            // Transform(
+            //   transform: Matrix4.translationValues(0.0, _translateButton.value * 0.85, 0.0),
+            //   child: buttonSearchGroup(),
+            // ),
+            _buttonToggle(),
+          ],
         ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: _onRefreshDeliveries,
+        //   child: Icon(Icons.refresh),
+        //   backgroundColor: Colors.green,
+        // ),
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: Colors.white,
@@ -139,22 +230,6 @@ class _DeliveriesPageState extends State {
                     child: Text("Clear"))
             ],
           ),
-            
-              // AppDropdown(
-              //   selectedValue: difficultyValue,
-              //   listValue: [
-              //     'All',
-              //     'Beginner',
-              //     'Intermediate',
-              //     'Expert',
-              //   ],
-              //   borderColor: AppColor.secondary,
-              //   onChanged: (value) {
-              //     setState(() {
-              //       difficultyValue = value;
-              //     });
-              //   },
-              // )
         ),
         body: DefaultTabController(
         length: 3,
