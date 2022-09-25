@@ -126,8 +126,7 @@ class _UpdateLocationModalState extends State<UpdateLocationModal> {
                               BlocBuilder<DeliveriesCubit, DeliveryState>(
                                 builder: (context, state) {
                                   return Text(
-                                    "Current location: " +
-                                        state.selectedDelivery!.coordinates!,
+                                    "Current location: ${state.selectedDelivery!.coordinates!}",
                                     style: TextStyle(
                                       color: AppColors.accent,
                                       fontSize: 12,

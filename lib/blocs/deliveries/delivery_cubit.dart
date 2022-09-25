@@ -102,10 +102,14 @@ class DeliveriesCubit extends Cubit<DeliveryState> {
   }
 
   void getDelivery(String? id) {
+    print(id);
     final Box<Delivery> box = Hive.box(_deliveriesBoxName);
+    print(box.get(id));
     emit(state.copyWith(
       selectedDelivery: box.get(id),
     ));
+
+    print(state.selectedDelivery);
   }
 
   // void search(String query){

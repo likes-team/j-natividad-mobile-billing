@@ -146,7 +146,7 @@ class Delivery {
       return this.latitude! + " " + this.longitude!;
     }
 
-    return null;
+    return "";
   }
 
   String generateImageName (){
