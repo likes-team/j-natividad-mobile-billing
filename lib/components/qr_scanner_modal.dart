@@ -30,6 +30,7 @@ class _QrScannerModalState extends State<QrScannerModal> {
 
   void _onQRViewCreated(QRViewController controller) {
     qrController = controller;
+    qrController.resumeCamera();
 
     qrController.scannedDataStream.listen((scanData) {
       _processScannedData(scanData);
