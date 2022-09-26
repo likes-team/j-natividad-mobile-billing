@@ -25,6 +25,7 @@ import 'package:jnb_mobile/pages/deliver_page.dart';
 import 'package:jnb_mobile/pages/failed_deliveries_page.dart';
 import 'package:jnb_mobile/pages/home_page.dart';
 import 'package:jnb_mobile/pages/login_page.dart';
+import 'package:jnb_mobile/pages/profile_page.dart';
 import 'package:jnb_mobile/pages/splash_page.dart';
 import 'package:jnb_mobile/repositories/authentication_repository.dart';
 import 'package:jnb_mobile/repositories/delivery_repository.dart';
@@ -158,7 +159,8 @@ class App extends StatelessWidget {
                   child: LoginPage(),
                 ),
             '/delivery': (context) => DeliverPage(),
-            '/deliveries/failed': (context) => FailedDeliveriesPage()
+            '/deliveries/failed': (context) => FailedDeliveriesPage(),
+            '/reports': (context) => ProfilePage()
           },
           // FutureBuilder(
           //   future: getUserData(),

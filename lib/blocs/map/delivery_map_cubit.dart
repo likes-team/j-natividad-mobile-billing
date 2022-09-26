@@ -16,7 +16,7 @@ class DeliveryMapCubit extends Cubit<DeliveryMapState> {
 
   Future<void> setCustomMarker() async {
     final mapMarker = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(), 'assets/image/marker.png');
+        ImageConfiguration(), 'assets/img/marker.png');
     emit(state.copyWith(mapMarker: mapMarker));
   }
 

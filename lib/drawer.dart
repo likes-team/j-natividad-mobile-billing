@@ -27,7 +27,6 @@ class DrawerComponent extends StatelessWidget {
               height: 20,
             ),
           ),
-
           ListTile(
             leading: Icon(Icons.history),
             title: Text('For Upload Deliveries'),
@@ -35,7 +34,6 @@ class DrawerComponent extends StatelessWidget {
               Navigator.pushNamed(context, '/deliveries/failed');
             },
           ),
-
           const Divider(
             height: 1,
             thickness: 1,
@@ -43,23 +41,20 @@ class DrawerComponent extends StatelessWidget {
             endIndent: 50,
             color: Colors.black,
           ),
-          // ListTile(
-          //   leading: Icon(Icons.favorite),
-          //   title: const Text('Favorite'),
-          //   onTap: () {
-          // Update the state of the app
-          // ...
-          // Then close the drawer
-          //     Navigator.pop(context);
-          //   },
-          // ),
-          // const Divider(
-          //         height: 1,
-          //         thickness: 1,
-          //          indent:15,
-          //         endIndent: 50,
-          //         color: Colors.black,
-          //       ),
+          ListTile(
+            leading: Icon(Icons.analytics),
+            title: Text('Reports'),
+            onTap: () {
+              Navigator.pushNamed(context, '/reports');
+            },
+          ),
+          const Divider(
+            height: 1,
+            thickness: 1,
+            indent: 15,
+            endIndent: 50,
+            color: Colors.black,
+          ),
           ListTile(
             leading: Icon(Icons.info_rounded),
             title: const Text('About'),
@@ -68,7 +63,6 @@ class DrawerComponent extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => AboutPage()));
             },
           ),
-
           const Divider(
             height: 1,
             thickness: 1,
@@ -76,7 +70,6 @@ class DrawerComponent extends StatelessWidget {
             endIndent: 50,
             color: Colors.black,
           ),
-
           BlocBuilder<AuthenticationBloc, AuthenticationState>(
             builder: (context, state) {
               return ListTile(
