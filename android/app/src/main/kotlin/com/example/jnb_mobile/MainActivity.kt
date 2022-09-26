@@ -1,4 +1,4 @@
-package com.example.jnb_mobile
+package com.likes.jnb_mobile
 
 import io.flutter.embedding.android.FlutterActivity
 
