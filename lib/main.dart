@@ -35,9 +35,11 @@ import 'package:jnb_mobile/services/user_service.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Hive.initFlutter();
   Hive.registerAdapter(DeliveryAdapter());
   Hive.registerAdapter(FailedDeliveryAdapter());
@@ -52,11 +54,19 @@ void main() async {
 
   await Geolocator.requestPermission();
 
-  runApp(App(
-    authenticationRepository: AuthenticationRepository(),
-    userRepository: UserRepository(),
-    deliveryRepository: DeliveryRepository(),
-  ));
+  await SentryFlutter.init(
+    (options) {
+      options.dsn = 'https://9213caced4884ceeb20518f42b5d48cb@o4503912449245184.ingest.sentry.io/4503916110151680';
+      // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+      // We recommend adjusting this value in production.
+      options.tracesSampleRate = 1.0;
+    },
+    appRunner: () =>   runApp(App(
+      authenticationRepository: AuthenticationRepository(),
+      userRepository: UserRepository(),
+      deliveryRepository: DeliveryRepository(),
+    ))
+  );
 }
 
 // Future<void> connectToDB() async {
