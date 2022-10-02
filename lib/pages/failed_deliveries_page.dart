@@ -43,14 +43,14 @@ class _FailedDeliveriesPageState extends State<FailedDeliveriesPage> {
               children: [
                 new Row(
                   children: [
-                    CircularProgressIndicator(),
+                    const CircularProgressIndicator(),
                     Container(
-                        margin: EdgeInsets.only(left: 7),
-                        child: Text("Uploading, please wait...")),
+                        margin: const EdgeInsets.only(left: 7),
+                        child: const Text("Uploading, please wait...")),
                   ],
                 ),
                 Container(
-                    margin: EdgeInsets.only(top: 20), child: Text("${state.uploadedCount} of ${state.forUploadCount}")),
+                    margin: const EdgeInsets.only(top: 20), child: Text("${state.uploadedCount} of ${state.forUploadCount}")),
               ],
             ),
           );
@@ -111,14 +111,14 @@ class _FailedDeliveriesPageState extends State<FailedDeliveriesPage> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
-          title: Text(
+          title: const Text(
             "For Upload Deliveries",
             style: TextStyle(
               color: AppColors.primary,
               fontWeight: FontWeight.bold,
             ),
           ),
-          iconTheme: IconThemeData(
+          iconTheme: const IconThemeData(
             color: AppColors.primary,
           ),
         ),
@@ -127,7 +127,7 @@ class _FailedDeliveriesPageState extends State<FailedDeliveriesPage> {
             builder: (context, state) {
               if (state.failedDeliveriesList == null ||
                   state.failedDeliveriesList!.isEmpty) {
-                return Text("Your for upload deliveries will display here.");
+                return const Text("Your for upload deliveries will display here.");
               }
 
               return ListView.builder(
@@ -157,8 +157,8 @@ class _FailedDeliveriesPageState extends State<FailedDeliveriesPage> {
         ),
         bottomNavigationBar: Container(
           height: 60,
-          padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-          decoration: BoxDecoration(
+          padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+          decoration: const BoxDecoration(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20), topRight: Radius.circular(20)),
             color: AppColors.primary,
@@ -171,7 +171,7 @@ class _FailedDeliveriesPageState extends State<FailedDeliveriesPage> {
                   child: Container(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
+                      children: const <Widget>[
                         Icon(Icons.upload_file, color: Colors.white),
                         Text("UPLOAD", style: TextStyle(color: Colors.white))
                       ],

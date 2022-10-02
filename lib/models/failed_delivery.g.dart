@@ -37,13 +37,14 @@ class FailedDeliveryAdapter extends TypeAdapter<FailedDelivery> {
       subAreaID: fields[17] as String?,
       subAreaName: fields[18] as String?,
       contractNo: fields[19] as String?,
+      remarks: fields[20] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, FailedDelivery obj) {
     writer
-      ..writeByte(20)
+      ..writeByte(21)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -83,7 +84,9 @@ class FailedDeliveryAdapter extends TypeAdapter<FailedDelivery> {
       ..writeByte(18)
       ..write(obj.subAreaName)
       ..writeByte(19)
-      ..write(obj.contractNo);
+      ..write(obj.contractNo)
+      ..writeByte(20)
+      ..write(obj.remarks);
   }
 
   @override

@@ -40,17 +40,17 @@ class _DeliveriesPageState extends State with SingleTickerProviderStateMixin {
 
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
     )..addListener(() {
         setState(() {});
       });
     _animationIcon = Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
     _buttonColor = ColorTween(begin: AppColors.secondary, end: AppColors.primary).animate(
         CurvedAnimation(
-            parent: _animationController, curve: Interval(0.0, 1.0, curve: Curves.linear)));
+            parent: _animationController, curve: const Interval(0.0, 1.0, curve: Curves.linear)));
     _translateButton = Tween<double>(begin: _fabHeight, end: -14.0).animate(CurvedAnimation(
-        parent: _animationController, curve: Interval(0.0, 0.75, curve: Curves.linear)));
-    Future.delayed(Duration(seconds: 2));
+        parent: _animationController, curve: const Interval(0.0, 0.75, curve: Curves.linear)));
+    Future.delayed(const Duration(seconds: 2));
   }
 
   void _onRefreshDeliveries() async {
@@ -69,11 +69,11 @@ class _DeliveriesPageState extends State with SingleTickerProviderStateMixin {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              return QrScannerModal();
+              return const QrScannerModal();
             },
           );
         },
-        child: Icon(Icons.qr_code_scanner_rounded),
+        child: const Icon(Icons.qr_code_scanner_rounded),
         tooltip: 'Scan QR',
       ),
     );
@@ -84,7 +84,7 @@ class _DeliveriesPageState extends State with SingleTickerProviderStateMixin {
       child: FloatingActionButton(
         mini: true,
         onPressed: () => _onRefreshDeliveries(),
-        child: Icon(Icons.refresh),
+        child: const Icon(Icons.refresh),
         tooltip: 'Refresh deliveries',
       ),
     );
@@ -203,13 +203,13 @@ class _DeliveriesPageState extends State with SingleTickerProviderStateMixin {
                         height: 40.0,
                         decoration: BoxDecoration(
                           color: Colors.grey[200],
-                          borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                          borderRadius: const BorderRadius.all(Radius.circular(30.0)),
                         ),
                         child: TextField(
                           onChanged: (text) => _search(text),
                           controller: _searchController,
-                          style: TextStyle(fontSize: 16.0),
-                          decoration: InputDecoration(
+                          style: const TextStyle(fontSize: 16.0),
+                          decoration: const InputDecoration(
                               hintText: "Search by contract no.",
                               prefixIcon: Icon(
                                 Icons.search,
@@ -225,17 +225,17 @@ class _DeliveriesPageState extends State with SingleTickerProviderStateMixin {
                       _searchController.text = "";
                       _search("");
                     }, 
-                    child: Text("Clear"))
+                    child: const Text("Clear"))
             ],
           ),
         ),
         body: DefaultTabController(
         length: 3,
         child: Column(
-          children: [
+          children: const [
             TabBar(
               labelStyle: TextStyle(fontSize: 12),
-              labelColor: AppColors.primary, 
+              labelColor: AppColors.secondary, 
                   tabs: [
                     Tab(text: "IN-PROGRESS",),
                     Tab(text: "PENDING",),
@@ -274,7 +274,7 @@ class InProgressTab extends StatelessWidget {
                 state.deliveriesStatus == DeliveriesStatus.error) {
               if (state.inProgressList == null ||
                   state.inProgressList!.length == 0) {
-                return Text("No deliveries yet");
+                return const Text("No deliveries yet");
               }
 
               return ListView.builder(
@@ -289,14 +289,14 @@ class InProgressTab extends StatelessWidget {
                       title: delivery.fullName,
                       subtitle:
                           delivery.areaName! + " - " + delivery.subAreaName!,
-                      subtitle2: delivery.subscriberAddress,
-                      subtitle3: delivery.status,
-                      subtitle4: delivery.contractNo ?? "");
+                      subtitle2: "",
+                      subtitle3: delivery.contractNo ?? "",
+                      subtitle4: delivery.subscriberAddress ?? "");
                 },
               );
             }
 
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           },
         ),
       ),
@@ -319,7 +319,7 @@ class PendingTab extends StatelessWidget {
                 state.deliveriesStatus == DeliveriesStatus.error) {
               if (state.pendingList == null ||
                   state.pendingList!.length == 0) {
-                return Text("No deliveries yet");
+                return const Text("No deliveries yet");
               }
 
               return ListView.builder(
@@ -334,14 +334,14 @@ class PendingTab extends StatelessWidget {
                       title: delivery.fullName,
                       subtitle:
                           delivery.areaName! + " - " + delivery.subAreaName!,
-                      subtitle2: delivery.subscriberAddress,
-                      subtitle3: delivery.status,
-                      subtitle4: delivery.contractNo ?? "");
+                      subtitle2: "",
+                      subtitle3: delivery.contractNo ?? "",
+                      subtitle4: delivery.subscriberAddress ?? "");
                 },
               );
             }
 
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           },
         ),
       ),
@@ -364,7 +364,7 @@ class DeliveredTab extends StatelessWidget {
                 state.deliveriesStatus == DeliveriesStatus.error) {
               if (state.deliveredList == null ||
                   state.deliveredList!.length == 0) {
-                return Text("No deliveries yet");
+                return const Text("No deliveries yet");
               }
 
               return ListView.builder(
@@ -379,14 +379,14 @@ class DeliveredTab extends StatelessWidget {
                       title: delivery.fullName,
                       subtitle:
                           delivery.areaName! + " - " + delivery.subAreaName!,
-                      subtitle2: delivery.subscriberAddress,
-                      subtitle3: delivery.status,
-                      subtitle4: delivery.contractNo ?? "");
+                      subtitle2: "",
+                      subtitle3: delivery.contractNo ?? "",
+                      subtitle4: delivery.subscriberAddress ?? "");
                 },
               );
             }
 
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           },
         ),
       ),

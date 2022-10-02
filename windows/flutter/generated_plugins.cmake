@@ -7,6 +7,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   geolocator_windows
   network_info_plus_windows
   permission_handler_windows
+  sentry_flutter
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

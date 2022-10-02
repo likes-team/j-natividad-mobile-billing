@@ -46,7 +46,7 @@ class _AppDropdownComponentState extends State<AppDropdownComponent> {
           border: Border.all(color: widget.borderColor!)),
       padding: EdgeInsets.only(right: 10.0, left: 10.0),
       child: DropdownButton<String>(
-        isExpanded: false,
+        isExpanded: true,
         hint: widget.selectedValue == ''
             ? Container(
                 child: Text(

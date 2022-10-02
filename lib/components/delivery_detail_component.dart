@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jnb_mobile/blocs/deliver/deliver_cubit.dart';
 import 'package:jnb_mobile/blocs/deliveries/delivery_cubit.dart';
+import 'package:jnb_mobile/components/app_dropdown_component.dart';
 import 'package:jnb_mobile/pages/image_viewer_page.dart';
 import 'package:jnb_mobile/utilities/color_utility.dart';
 import 'package:photo_view/photo_view.dart';
@@ -15,16 +17,18 @@ class DeliveryDetailComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final deliverCubit = BlocProvider.of<DeliverCubit>(context);
+
     return Container(
       alignment: Alignment.center,
-      margin: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+      margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
             spreadRadius: 5,
             blurRadius: 20,
-            offset: Offset(0, 3),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -32,14 +36,14 @@ class DeliveryDetailComponent extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        margin: EdgeInsets.all(0),
+        margin: const EdgeInsets.all(0),
         color: Colors.white,
         child: Column(
           children: [
             Container(
               alignment: Alignment.centerLeft,
-              margin: EdgeInsets.only(top: 10, left: 15),
-              child: Text(
+              margin: const EdgeInsets.only(top: 10, left: 15),
+              child: const Text(
                 "Delivery Details",
                 style: TextStyle(
                   fontSize: 20,
@@ -56,8 +60,34 @@ class DeliveryDetailComponent extends StatelessWidget {
                     title: Text(state.selectedDelivery!.status == "DELIVERING"
                         ? "CAPTURED/SAVED"
                         : state.selectedDelivery!.status!),
-                    subtitle: Text("Status"),
-                    leading: Icon(Icons.history_edu),
+                    subtitle: const Text("Status"),
+                    leading: const Icon(Icons.history_edu),
+                  ),
+                );
+              },
+            ),
+            BlocBuilder<DeliveriesCubit, DeliveryState>(
+              builder: (context, state) {
+                return Container(
+                  alignment: Alignment.centerLeft,
+                  child: ListTile(
+                    title: AppDropdownComponent(
+                      selectedValue: state.selectedDelivery?.remarks ?? 'N/A',
+                      listValue: const [
+                        'N/A',
+                        'MOVE OUT/TRANSFER',
+                        'INSUFFICIENT/WRONG ADDRESS',
+                        'ABANDON',
+                        'MERALCO ADDRESS',
+                        'REFUSE TO ACCEPT',
+                      ],
+                      borderColor: AppColors.secondary,
+                      onChanged: state.selectedDelivery!.status == "IN-PROGRESS"
+                       ? (value) => deliverCubit.updateRemarks(value!)
+                       : null
+                    ),
+                    subtitle: const Text("Remarks"),
+                    leading: const Icon(Icons.history_edu),
                   ),
                 );
               },
@@ -82,12 +112,12 @@ class DeliveryDetailComponent extends StatelessWidget {
                                             delivery: state.selectedDelivery,
                                           )));
                             },
-                            child: Text(
+                            child: const Text(
                               "Click to view captured image",
                               style: TextStyle(color: AppColors.primary),
                             )),
-                    subtitle: Text("Captured Photo"),
-                    leading: Icon(Icons.image),
+                    subtitle: const Text("Captured Photo"),
+                    leading: const Icon(Icons.image),
                   ),
                 );
               },

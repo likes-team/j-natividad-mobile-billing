@@ -10,6 +10,7 @@
 #include <geolocator_windows/geolocator_windows.h>
 #include <network_info_plus_windows/network_info_plus_windows_plugin.h>
 #include <permission_handler_windows/permission_handler_windows_plugin.h>
+#include <sentry_flutter/sentry_flutter_plugin.h>
 
 void RegisterPlugins(flutter::PluginRegistry* registry) {
   ConnectivityPlusWindowsPluginRegisterWithRegistrar(
@@ -20,4 +21,6 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("NetworkInfoPlusWindowsPlugin"));
   PermissionHandlerWindowsPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("PermissionHandlerWindowsPlugin"));
+  SentryFlutterPluginRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("SentryFlutterPlugin"));
 }

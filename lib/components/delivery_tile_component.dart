@@ -23,12 +23,12 @@ class DeliveryTile extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: EdgeInsets.fromLTRB(10, 1, 10, 1),
+        margin: const EdgeInsets.fromLTRB(10, 1, 10, 1),
         child: Card(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           child: Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               ListTile(
@@ -43,7 +43,7 @@ class DeliveryTile extends StatelessWidget {
                     Text(
                       title!,
                       overflow: TextOverflow.visible,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: AppColors.primary,
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
@@ -51,8 +51,8 @@ class DeliveryTile extends StatelessWidget {
                     ),
                     Text(
                       subtitle3!,
-                      style: TextStyle(
-                        color: AppColors.getColorFromDeliveryStatus(status: subtitle3),
+                      style: const TextStyle(
+                        color: AppColors.secondary,
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
                       ),
@@ -60,33 +60,35 @@ class DeliveryTile extends StatelessWidget {
                   ],
                 ),
                 subtitle: Container(
-                  margin: EdgeInsets.only(top: 5),
+                  margin: const EdgeInsets.only(top: 5),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         subtitle!,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: AppColors.accent,  
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 5,
                       ),
-                      Text(
+                      subtitle4 == "" ? const SizedBox(height: 0,)
+                      : Text(
                         subtitle4,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: AppColors.accent,
                           fontSize: 12,
                           fontWeight: FontWeight.normal,
                         ),
                       ),
-                         SizedBox(
+                      const SizedBox(
                         height: 5,
                       ),
-                      Text(
+                      subtitle2 == "" ? const SizedBox()
+                      : Text(
                       subtitle2!,
                       style: TextStyle(
                         color:  Colors.grey[700],
@@ -97,9 +99,6 @@ class DeliveryTile extends StatelessWidget {
                     ],
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 10,
               ),
             ],
           ),

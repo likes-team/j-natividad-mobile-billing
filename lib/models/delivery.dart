@@ -53,6 +53,9 @@ class Delivery {
   @HiveField(15)
   final String? contractNo;
 
+  @HiveField(16)
+  final String? remarks;
+
   Delivery({
     this.id,
     this.status,
@@ -69,7 +72,8 @@ class Delivery {
     this.subAreaID,
     this.subAreaName,
     this.imagePath,
-    this.contractNo
+    this.contractNo,
+    this.remarks
   });
 
   factory Delivery.fromJson(json) {
@@ -89,7 +93,8 @@ class Delivery {
       subAreaID: json['sub_area_id'],
       subAreaName: json['sub_area_name'],
       imagePath: json['image_path'],
-      contractNo: json['contract_no']
+      contractNo: json['contract_no'],
+      remarks: json['remarks']
     );
   }
 
@@ -110,7 +115,8 @@ class Delivery {
       subAreaID: delivery.subAreaID,
       subAreaName: delivery.subAreaName,
       imagePath: newImagePath ?? delivery.imagePath,
-      contractNo: delivery.contractNo
+      contractNo: delivery.contractNo,
+      remarks: delivery.remarks
     );
   }
 
@@ -131,7 +137,30 @@ class Delivery {
       subAreaID: delivery.subAreaID,
       subAreaName: delivery.subAreaName,
       imagePath: delivery.imagePath,
-      contractNo: delivery.contractNo
+      contractNo: delivery.contractNo,
+      remarks: delivery.remarks
+    );
+  }
+
+  factory Delivery.updateRemarks({required Delivery delivery, required String newRemarks}){
+    return Delivery(
+      id: delivery.id,
+      status: delivery.status,
+      subscriberID: delivery.subscriberID,
+      subscriberFname: delivery.subscriberFname,
+      subscriberLname: delivery.subscriberLname,
+      subscriberAddress: delivery.subscriberAddress,
+      subscriberEmail: delivery.subscriberEmail,
+      deliveryDate: delivery.deliveryDate,
+      latitude: delivery.latitude,
+      longitude: delivery.longitude,
+      areaID: delivery.areaID,
+      areaName: delivery.areaName,
+      subAreaID: delivery.subAreaID,
+      subAreaName: delivery.subAreaName,
+      imagePath: delivery.imagePath,
+      contractNo: delivery.contractNo,
+      remarks: newRemarks
     );
   }
 

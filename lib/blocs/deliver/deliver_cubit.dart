@@ -21,6 +21,19 @@ class DeliverCubit extends Cubit<DeliverState> {
     _deliveryCubit = deliveryCubit,
     super(DeliverState());
 
+  void updateRemarks(String value) {
+    final Delivery updatedDeliveryData = Delivery.updateRemarks(
+      delivery: _deliveryCubit.state.selectedDelivery!,
+      newRemarks: value
+    );
+
+    _deliveryCubit.updateDeliveryData(updatedDeliveryData);
+
+    if(_deliveryCubit.state.selectedDelivery!.id == updatedDeliveryData.id){
+      _deliveryCubit.getDelivery(updatedDeliveryData.id);
+    }
+  }
+
   void deliver(Delivery delivery, File? deliveryPhoto, UserLocation? userLocation) async {
     if(delivery.status != "IN-PROGRESS"){
       return;
@@ -61,70 +74,22 @@ class DeliverCubit extends Cubit<DeliverState> {
     }
 
     // try {
-      final String imageName = deliveryPhoto.path.split('/').last;
-        _addFailedDelivery(
-          delivery: delivery,
-          messengerID: "", // TODO
-          dateMobileDelivery: DateTime.now(),
-          imagePath: deliveryPhotoCopy.path,
-          latitude: userLocation!.latitude.toString(),
-          longitude: userLocation.longitude.toString(),
-          accuracy: userLocation.accuracy.toString(),
-          imageName: imageName,
-        );  
+    final String imageName = deliveryPhoto.path.split('/').last;
+    _addFailedDelivery(
+      delivery: delivery,
+      messengerID: "", // TODO
+      dateMobileDelivery: DateTime.now(),
+      imagePath: deliveryPhotoCopy.path,
+      latitude: userLocation!.latitude.toString(),
+      longitude: userLocation.longitude.toString(),
+      accuracy: userLocation.accuracy.toString(),
+      imageName: imageName,
+    );  
 
-        emit(state.copyWith(
-          deliverStatus: DeliverStatus.delivered,
-          messageStatus: "Saved Successfully!"
-        ));
-
-      // _deliveryRepository.deliver(
-      //   delivery:delivery, image: deliveryPhotoCopy, 
-      //   userLocation: userLocation
-      // ).then((response) {
-      //   print(response);
-      //   Delivery deliveryUpdateObject = Delivery.updateStatusAndImage(
-      //     delivery: delivery,
-      //     newStatus: response.data['data']['status'],
-      //     newImagePath: response.data['data']['image_path']
-      //   );
-
-      //   _deliveryCubit.updateDeliveryData(deliveryUpdateObject);
-      //   emit(state.copyWith(
-      //     deliverStatus: DeliverStatus.delivered,
-      //     messageStatus: "Delivered Successfully"
-      //   ));
-
-      //   if(_deliveryCubit.state.selectedDelivery.id == deliveryUpdateObject.id){
-      //     emit(state.copyWith(
-      //       selectedDelivery: deliveryUpdateObject, 
-      //     ));
-      //   }
-      // }).catchError((onError){
-      //   emit(state.copyWith(
-      //     deliverStatus: DeliverStatus.failed, 
-      //     messageStatus: "Delivering Failed, resend when internet is available."
-      //   ));
-    
-      // });
-    // } catch (_) {
-    //   emit(state.copyWith(
-    //     deliverStatus: DeliverStatus.failed, 
-    //     messageStatus: "Delivering Failed, resend when internet is available."
-    //   ));
-
-    //   final String imageName = deliveryPhoto.path.split('/').last;
-    //   _addFailedDelivery(
-    //     delivery: delivery,
-    //     messengerID: "", // TODO
-    //     dateMobileDelivery: DateTime.now(),
-    //     imagePath: deliveryPhotoCopy.path,
-    //     latitude: userLocation.latitude.toString(),
-    //     longitude: userLocation.longitude.toString(),
-    //     accuracy: userLocation.accuracy.toString(),
-    //     imageName: imageName,
-    //   );
-    // }
+    emit(state.copyWith(
+      deliverStatus: DeliverStatus.delivered,
+      messageStatus: "Saved Successfully!"
+    ));
   }
 
   void _addFailedDelivery({
@@ -159,6 +124,7 @@ class DeliverCubit extends Cubit<DeliverState> {
       areaName: delivery.areaName,
       subAreaID: delivery.subAreaID,
       subAreaName: delivery.subAreaName,
+      remarks: delivery.remarks
     );
     hiveBox.put(newFailedDelivery.id, newFailedDelivery);
   }

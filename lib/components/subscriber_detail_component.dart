@@ -13,14 +13,14 @@ class SubscriberDetailComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      margin: EdgeInsets.only(top: 25, left: 10, right: 10, bottom: 10),
+      margin: const EdgeInsets.only(top: 25, left: 10, right: 10, bottom: 10),
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
             spreadRadius: 5,
             blurRadius: 20,
-            offset: Offset(0, 3),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -28,17 +28,17 @@ class SubscriberDetailComponent extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        margin: EdgeInsets.all(0),
+        margin: const EdgeInsets.all(0),
         color: Colors.white,
         child: Column(
           children: [
             Container(
               alignment: Alignment.centerLeft,
-              margin: EdgeInsets.only(top: 10, left: 15),
-              child: Text(
+              margin: const EdgeInsets.only(top: 10, left: 15),
+              child: const Text(
                 "Subscriber Details",
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: AppColors.primary,
                 ),
@@ -48,8 +48,8 @@ class SubscriberDetailComponent extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: ListTile(
                 title: Text(delivery!.fullName),
-                subtitle: Text("Name"),
-                leading: Icon(Icons.person),
+                subtitle: const Text("Name"),
+                leading: const Icon(Icons.person),
               ),
             ),
             Container(
@@ -57,36 +57,36 @@ class SubscriberDetailComponent extends StatelessWidget {
               child: ListTile(
                 title: Text(
                   delivery!.subscriberAddress ?? "No address",
-                  style: TextStyle(fontSize: 13),
+                  style: const TextStyle(fontSize: 13),
                 ),
-                subtitle: Text("Address"),
-                leading: Icon(Icons.location_city),
+                subtitle: const Text("Address"),
+                leading: const Icon(Icons.location_city),
               ),
             ),
             Container(
               alignment: Alignment.centerLeft,
               child: ListTile(
                 title: Text(delivery!.areaName!),
-                subtitle: Text("Area"),
-                leading: Icon(Icons.location_city),
+                subtitle: const Text("Area"),
+                leading: const Icon(Icons.location_city),
               ),
             ),
             Container(
               alignment: Alignment.centerLeft,
               child: ListTile(
                 title: Text(delivery!.subAreaName!),
-                subtitle: Text("Sub Area"),
-                leading: Icon(Icons.location_city),
+                subtitle: const Text("Sub Area"),
+                leading: const Icon(Icons.location_city),
               ),
             ),
             delivery!.subscriberEmail == "" 
-            ? SizedBox()
+            ? const SizedBox()
             : Container(
               alignment: Alignment.centerLeft,
               child: ListTile(
                 title: Text(delivery!.subscriberEmail ?? 'No email address'),
-                subtitle: Text("Email Address"),
-                leading: Icon(Icons.email),
+                subtitle: const Text("Email Address"),
+                leading: const Icon(Icons.email),
               ),
             ),
             Container(
@@ -99,8 +99,8 @@ class SubscriberDetailComponent extends StatelessWidget {
                         color: delivery!.coordinates == null
                             ? Colors.red
                             : Colors.green)),
-                subtitle: Text("Location"),
-                leading: Icon(Icons.pin_drop),
+                subtitle: const Text("Location"),
+                leading: const Icon(Icons.pin_drop),
               ),
             ),
           ],

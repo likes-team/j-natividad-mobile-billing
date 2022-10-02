@@ -94,6 +94,7 @@ class DeliveryRepository {
           failedDelivery.imagePath!,
           filename: failedDelivery.fileName,
         ),
+        'remarks': failedDelivery.remarks
       });
       return _dio.post(AppUrls.deliverURL, data: formData);
     } on SocketException catch (err) {

@@ -63,7 +63,10 @@ class FailedDelivery {
 
   @HiveField(19)
   final String? contractNo;
-
+  
+  @HiveField(20)
+  final String? remarks;
+  
   FailedDelivery({
     this.id,
     this.messengerID,
@@ -84,7 +87,8 @@ class FailedDelivery {
     this.areaName,
     this.subAreaID,
     this.subAreaName,
-    this.contractNo
+    this.contractNo,
+    this.remarks
   });
 
   String get fullName {
