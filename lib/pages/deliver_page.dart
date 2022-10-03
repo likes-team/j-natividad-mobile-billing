@@ -13,6 +13,7 @@ import 'package:jnb_mobile/components/subscriber_detail_component.dart';
 import 'package:jnb_mobile/components/update_location_modal.dart';
 import 'package:jnb_mobile/models/user_location_model.dart';
 import 'package:jnb_mobile/utilities/color_utility.dart';
+import 'package:jnb_mobile/utilities/coord_utility.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
@@ -56,7 +57,7 @@ class _DeliverPageState extends State<DeliverPage> {
     _deliverCubit = BlocProvider.of<DeliverCubit>(context);
     _userLocation = BlocProvider.of<LocationCubit>(context);
 
-    if(_deliveryCubit.state.selectedDelivery!.imagePath != null){
+    if (_deliveryCubit.state.selectedDelivery!.imagePath != null) {
       _deliveryPhoto = File(_deliveryCubit.state.selectedDelivery!.imagePath!);
     }
   }
@@ -136,16 +137,31 @@ class _DeliverPageState extends State<DeliverPage> {
               height: 24.0,
               left: 0.0,
               right: 0.0,
-              child: Container(
-                color: AppColors.primary,
-                child: Center(
-                  child: BlocBuilder<LocationCubit, UserLocation?>(
-                    builder: (context, state) {
-                      return Text(
-                          "Your Location: ${state?.fullLocation}");
-                    },
-                  ),
-                ),
+              child: BlocBuilder<LocationCubit, UserLocation?>(
+                builder: (context, state) {
+                  return Container(
+                    color: isCoordsNear(
+                            state?.longitude,
+                            state?.latitude,
+                            _deliveryCubit.state.selectedDelivery?.longitude,
+                            _deliveryCubit.state.selectedDelivery?.latitude,
+                            .2)
+                        ? Colors.green
+                        : Colors.red,
+                    child: Center(
+                      child: isCoordsNear(
+                              state?.longitude,
+                              state?.latitude,
+                              _deliveryCubit.state.selectedDelivery?.longitude,
+                              _deliveryCubit.state.selectedDelivery?.latitude,
+                              .2)
+                            ? const Text(
+                                "You're inside the delivery area!")
+                           : const Text(
+                                 "You're outside the delivery area!")
+                      ),
+                    );
+                },
               ),
             ),
             SingleChildScrollView(
@@ -196,8 +212,10 @@ class _DeliverPageState extends State<DeliverPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Icon(Icons.camera,
-                                color: AppColors.getDisabledColorFromDeliveryStatus(
-                                        status: state.selectedDelivery!.status)),
+                                color: AppColors
+                                    .getDisabledColorFromDeliveryStatus(
+                                        status:
+                                            state.selectedDelivery!.status)),
                             Text(
                                 _deliveryPhoto == null
                                     ? "CAPTURE"
@@ -232,7 +250,8 @@ class _DeliverPageState extends State<DeliverPage> {
                             Icon(Icons.save,
                                 color: AppColors
                                     .getDisabledColorFromDeliveryStatus(
-                                        status: state.selectedDelivery!.status)),
+                                        status:
+                                            state.selectedDelivery!.status)),
                             Text("SAVE",
                                 style: TextStyle(
                                     color: AppColors
