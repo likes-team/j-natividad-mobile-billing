@@ -7,9 +7,9 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
    <application
-        android:label="JNatividadBilling"
+        android:label="JNatividad Billing"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <meta-data android:name="com.google.android.geo.API_KEY"
                android:value="AIzaSyDdiAoL7cmOzFwchSoRBq0wMch-d8mqez0"/>
         <activity

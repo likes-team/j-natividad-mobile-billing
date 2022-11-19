@@ -100,6 +100,7 @@ class _FailedDeliveriesPageState extends State<FailedDeliveriesPage> {
             ),
           );
         } else if (state.redeliverStatus == RedeliverStatus.failed) {
+          Navigator.pop(context);
           showTopSnackBar(
             context,
             CustomSnackBar.error(
