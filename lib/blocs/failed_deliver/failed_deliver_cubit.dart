@@ -55,7 +55,6 @@ class FailedDeliverCubit extends Cubit<FailedDeliverState> {
     int failedUploadCount = 0;
     int successUploadCount = 0;
 
-    // try {
     for (var failedDelivery in failedDeliveries) {
       try {
         await _deliveryRepository
@@ -105,12 +104,6 @@ class FailedDeliverCubit extends Cubit<FailedDeliverState> {
         uploadedCount: 0,
       ));
     }
-    // } catch (err) {
-    //   emit(state.copyWith(
-    //     redeliverStatus: RedeliverStatus.failed,
-    //     statusMessage: err.toString()
-    //   ));
-    // }
   }
 
   void _removeFailedDelivery(FailedDelivery delivery) {
